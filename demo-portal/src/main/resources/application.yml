@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: demo-portal
+  profiles:
+    active: dev # 默认为开发环境
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+mybatis:
+  mapper-locations:
+    - classpath:mapper/*.xml
+    - classpath*:com/**/mapper/*.xml
+  type-aliases-package: com.example.demo.entity, com.example.demo.dto, com.example.demo.domain
+  configuration:
+    call-setters-on-nulls: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+mybatis-plus:
+  # 指定包别名
+  type-aliases-package: com.example.demo.entity, com.example.demo.dto, com.example.demo.domain
+  # 加载全局的配置文件
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: AUTO
+      logic-delete-field: is_delete
+      logic-not-delete-value: 0
+      logic-delete-value: 1
+
+springfox:
+  documentation:
+    enabled: true
+
+# 禁止actuator监控redis连接
+management:
+  health:
+    redis:
+      enabled: false
+

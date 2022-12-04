@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.UmsMemberMapper">
+    <resultMap id="BaseResultMap" type="com.example.demo.entity.UmsMember">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="gender" column="gender" jdbcType="TINYINT"/>
+        <result property="birthday" column="birthday" jdbcType="DATE"/>
+        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+        <result property="areaId" column="area_id" jdbcType="BIGINT"/>
+        <result property="detailArea" column="detail_area" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="followeeNumber" column="followee_number" jdbcType="INTEGER"/>
+        <result property="followerNumber" column="follower_number" jdbcType="INTEGER"/>
+        <result property="sign" column="sign" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="TINYINT"/>
+        <result property="integration" column="integration" jdbcType="INTEGER"/>
+        <result property="historyIntegration" column="history_integration" jdbcType="INTEGER"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
+        <result property="creator" column="creator" jdbcType="VARCHAR"/>
+        <result property="gmtModified" column="gmt_modified" jdbcType="TIMESTAMP"/>
+        <result property="modifier" column="modifier" jdbcType="VARCHAR"/>
+        <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, name, phone, password, gender, birthday, nickname, area_id, detail_area, avatar, email, followee_number, follower_number, sign, status, integration, history_integration, remark, gmt_create, creator, gmt_modified, modifier, is_delete
+    </sql>
+
+    <sql id="queryCondition">
+        <if test="id != null">and id = #{id,jdbcType=BIGINT}</if>
+        <if test="name != null">and name = #{name,jdbcType=VARCHAR}</if>
+        <if test="phone != null">and phone = #{phone,jdbcType=VARCHAR}</if>
+        <if test="password != null">and password = #{password,jdbcType=VARCHAR}</if>
+        <if test="gender != null">and gender = #{gender,jdbcType=TINYINT}</if>
+        <if test="birthday != null">and birthday = #{birthday,jdbcType=DATE}</if>
+        <if test="nickname != null">and nickname = #{nickname,jdbcType=VARCHAR}</if>
+        <if test="areaId != null">and area_id = #{areaId,jdbcType=BIGINT}</if>
+        <if test="detailArea != null">and detail_area = #{detailArea,jdbcType=VARCHAR}</if>
+        <if test="avatar != null">and avatar = #{avatar,jdbcType=VARCHAR}</if>
+        <if test="email != null">and email = #{email,jdbcType=VARCHAR}</if>
+        <if test="followeeNumber != null">and followee_number = #{followeeNumber,jdbcType=INTEGER}</if>
+        <if test="followerNumber != null">and follower_number = #{followerNumber,jdbcType=INTEGER}</if>
+        <if test="sign != null">and sign = #{sign,jdbcType=VARCHAR}</if>
+        <if test="status != null">and status = #{status,jdbcType=TINYINT}</if>
+        <if test="integration != null">and integration = #{integration,jdbcType=INTEGER}</if>
+        <if test="historyIntegration != null">and history_integration = #{historyIntegration,jdbcType=INTEGER}</if>
+        <if test="remark != null">and remark = #{remark,jdbcType=VARCHAR}</if>
+        <if test="gmtCreate != null">and gmt_create = #{gmtCreate,jdbcType=TIMESTAMP}</if>
+        <if test="creator != null">and creator = #{creator,jdbcType=VARCHAR}</if>
+        <if test="gmtModified != null">and gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}</if>
+        <if test="modifier != null">and modifier = #{modifier,jdbcType=VARCHAR}</if>
+        <if test="isDelete != null">and is_delete = #{isDelete,jdbcType=TINYINT}</if>
+    </sql>
+
+    <insert id="saveUmsMember" keyColumn="id" keyProperty="id" parameterType="com.example.demo.entity.UmsMember" useGeneratedKeys="true">
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO ums_member (id, name, phone, password, gender, birthday, nickname, area_id, detail_area, avatar, email, followee_number, follower_number, sign, status, integration, history_integration, remark, gmt_create, creator, gmt_modified, modifier, is_delete)
+        VALUES (
+            #{id,jdbcType=BIGINT},
+            #{name,jdbcType=VARCHAR},
+            #{phone,jdbcType=VARCHAR},
+            #{password,jdbcType=VARCHAR},
+            #{gender,jdbcType=TINYINT},
+            #{birthday,jdbcType=DATE},
+            #{nickname,jdbcType=VARCHAR},
+            #{areaId,jdbcType=BIGINT},
+            #{detailArea,jdbcType=VARCHAR},
+            #{avatar,jdbcType=VARCHAR},
+            #{email,jdbcType=VARCHAR},
+            #{followeeNumber,jdbcType=INTEGER},
+            #{followerNumber,jdbcType=INTEGER},
+            #{sign,jdbcType=VARCHAR},
+            #{status,jdbcType=TINYINT},
+            #{integration,jdbcType=INTEGER},
+            #{historyIntegration,jdbcType=INTEGER},
+            #{remark,jdbcType=VARCHAR},
+            #{gmtCreate,jdbcType=TIMESTAMP},
+            #{creator,jdbcType=VARCHAR},
+            #{gmtModified,jdbcType=TIMESTAMP},
+            #{modifier,jdbcType=VARCHAR},
+            #{isDelete,jdbcType=TINYINT}
+        )
+    </insert>
+
+    <select id="getUmsMemberById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM ums_member
+        WHERE id = #{id,jdbcType=BIGINT} 
+    </select>
+
+    <select id="getUmsMembers" parameterType="com.example.demo.entity.UmsMember" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM ums_member
+        <where>
+            <include refid="queryCondition"></include>
+        </where>
+    </select>
+    
+    <delete id="deleteUmsMembers" parameterType="java.util.List">
+        DELETE FROM ums_member
+        <where>
+         id IN
+            <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </where>
+    </delete>
+
+    <update id="updateUmsMember" parameterType="com.example.demo.entity.UmsMember">
+        UPDATE ums_member
+        <set>
+            <if test="name != null">name = #{name,jdbcType=VARCHAR},</if>
+            <if test="phone != null">phone = #{phone,jdbcType=VARCHAR},</if>
+            <if test="password != null">password = #{password,jdbcType=VARCHAR},</if>
+            <if test="gender != null">gender = #{gender,jdbcType=TINYINT},</if>
+            <if test="birthday != null">birthday = #{birthday,jdbcType=DATE},</if>
+            <if test="nickname != null">nickname = #{nickname,jdbcType=VARCHAR},</if>
+            <if test="areaId != null">area_id = #{areaId,jdbcType=BIGINT},</if>
+            <if test="detailArea != null">detail_area = #{detailArea,jdbcType=VARCHAR},</if>
+            <if test="avatar != null">avatar = #{avatar,jdbcType=VARCHAR},</if>
+            <if test="email != null">email = #{email,jdbcType=VARCHAR},</if>
+            <if test="followeeNumber != null">followee_number = #{followeeNumber,jdbcType=INTEGER},</if>
+            <if test="followerNumber != null">follower_number = #{followerNumber,jdbcType=INTEGER},</if>
+            <if test="sign != null">sign = #{sign,jdbcType=VARCHAR},</if>
+            <if test="status != null">status = #{status,jdbcType=TINYINT},</if>
+            <if test="integration != null">integration = #{integration,jdbcType=INTEGER},</if>
+            <if test="historyIntegration != null">history_integration = #{historyIntegration,jdbcType=INTEGER},</if>
+            <if test="remark != null">remark = #{remark,jdbcType=VARCHAR},</if>
+            <if test="gmtCreate != null">gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},</if>
+            <if test="creator != null">creator = #{creator,jdbcType=VARCHAR},</if>
+            <if test="gmtModified != null">gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},</if>
+            <if test="modifier != null">modifier = #{modifier,jdbcType=VARCHAR},</if>
+            <if test="isDelete != null">is_delete = #{isDelete,jdbcType=TINYINT},</if>
+        </set>
+        WHERE id = #{id,jdbcType=BIGINT} 
+    </update>
+    
+    <select id="countUmsMember" parameterType="com.example.demo.entity.UmsMember" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM ums_member
+        <where>
+            <include refid="queryCondition"></include>
+        </where>
+    </select>
+</mapper>

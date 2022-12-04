@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.SysFileMapper">
+    <resultMap id="BaseResultMap" type="com.example.demo.entity.SysFile">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="location" column="location" jdbcType="TINYINT"/>
+        <result property="bucket" column="bucket" jdbcType="VARCHAR"/>
+        <result property="originName" column="origin_name" jdbcType="VARCHAR"/>
+        <result property="suffix" column="suffix" jdbcType="VARCHAR"/>
+        <result property="size" column="size" jdbcType="DECIMAL"/>
+        <result property="objectName" column="object_name" jdbcType="VARCHAR"/>
+        <result property="path" column="path" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
+        <result property="creator" column="creator" jdbcType="VARCHAR"/>
+        <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
+        <result property="modifier" column="modifier" jdbcType="VARCHAR"/>
+        <result property="gmtModified" column="gmt_modified" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, location, bucket, origin_name, suffix, size, object_name, path, remark, is_delete, creator, gmt_create, modifier, gmt_modified
+    </sql>
+
+    <sql id="queryCondition">
+        <if test="id != null">and id = #{id,jdbcType=BIGINT}</if>
+        <if test="location != null">and location = #{location,jdbcType=TINYINT}</if>
+        <if test="bucket != null">and bucket = #{bucket,jdbcType=VARCHAR}</if>
+        <if test="originName != null">and origin_name = #{originName,jdbcType=VARCHAR}</if>
+        <if test="suffix != null">and suffix = #{suffix,jdbcType=VARCHAR}</if>
+        <if test="size != null">and size = #{size,jdbcType=DECIMAL}</if>
+        <if test="objectName != null">and object_name = #{objectName,jdbcType=VARCHAR}</if>
+        <if test="path= null">and path = #{path,jdbcType=VARCHAR}</if>
+        <if test="remark != null">and remark = #{remark,jdbcType=VARCHAR}</if>
+        <if test="isDelete != null">and is_delete = #{isDelete,jdbcType=TINYINT}</if>
+        <if test="creator != null">and creator = #{creator,jdbcType=VARCHAR}</if>
+        <if test="gmtCreate != null">and gmt_create = #{gmtCreate,jdbcType=TIMESTAMP}</if>
+        <if test="modifier != null">and modifier = #{modifier,jdbcType=VARCHAR}</if>
+        <if test="gmtModified != null">and gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}</if>
+    </sql>
+
+    <insert id="saveSysFile" keyColumn="id" keyProperty="id" parameterType="com.example.demo.entity.SysFile" useGeneratedKeys="true">
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO sys_file (id, location, bucket, origin_name, suffix, size, object_name, path, remark, is_delete, creator, gmt_create, modifier, gmt_modified)
+        VALUES (
+            #{id,jdbcType=BIGINT},
+            #{location,jdbcType=TINYINT},
+            #{bucket,jdbcType=VARCHAR},
+            #{originName,jdbcType=VARCHAR},
+            #{suffix,jdbcType=VARCHAR},
+            #{size,jdbcType=DECIMAL},
+            #{objectName,jdbcType=VARCHAR},
+            #{path,jdbcType=VARCHAR},
+            #{remark,jdbcType=VARCHAR},
+            #{isDelete,jdbcType=TINYINT},
+            #{creator,jdbcType=VARCHAR},
+            #{gmtCreate,jdbcType=TIMESTAMP},
+            #{modifier,jdbcType=VARCHAR},
+            #{gmtModified,jdbcType=TIMESTAMP}
+        )
+    </insert>
+
+    <select id="getSysFileById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM sys_file
+        WHERE id = #{id,jdbcType=BIGINT} 
+    </select>
+
+    <select id="getSysFiles" parameterType="com.example.demo.entity.SysFile" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM sys_file
+        <where>
+            <include refid="queryCondition"></include>
+        </where>
+    </select>
+    
+    <delete id="deleteSysFiles" parameterType="java.util.List">
+        DELETE FROM sys_file
+        <where>
+         id IN
+            <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </where>
+    </delete>
+
+    <update id="updateSysFile" parameterType="com.example.demo.entity.SysFile">
+        UPDATE sys_file
+        <set>
+            <if test="location != null">location = #{location,jdbcType=TINYINT},</if>
+            <if test="bucket != null">bucket = #{bucket,jdbcType=VARCHAR},</if>
+            <if test="originName != null">origin_name = #{originName,jdbcType=VARCHAR},</if>
+            <if test="suffix != null">suffix = #{suffix,jdbcType=VARCHAR},</if>
+            <if test="size != null">size = #{size,jdbcType=DECIMAL},</if>
+            <if test="objectName != null">object_name = #{objectName,jdbcType=VARCHAR},</if>
+            <if test="path != null">path = #{path,jdbcType=VARCHAR},</if>
+            <if test="remark != null">remark = #{remark,jdbcType=VARCHAR},</if>
+            <if test="isDelete != null">is_delete = #{isDelete,jdbcType=TINYINT},</if>
+            <if test="creator != null">creator = #{creator,jdbcType=VARCHAR},</if>
+            <if test="gmtCreate != null">gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},</if>
+            <if test="modifier != null">modifier = #{modifier,jdbcType=VARCHAR},</if>
+            <if test="gmtModified != null">gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},</if>
+        </set>
+        WHERE id = #{id,jdbcType=BIGINT} 
+    </update>
+    
+    <select id="countSysFile" parameterType="com.example.demo.entity.SysFile" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM sys_file
+        <where>
+            <include refid="queryCondition"></include>
+        </where>
+    </select>
+</mapper>
