@@ -1,6 +1,5 @@
 package com.example.demo.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.PhoneUtil;
 import cn.hutool.core.util.RandomUtil;
@@ -10,6 +9,7 @@ import com.example.demo.dto.LoginParam;
 import com.example.demo.dto.MemberDto;
 import com.example.demo.entity.UmsMember;
 import com.example.demo.mapper.UmsMemberMapper;
+import com.example.demo.service.UmsMemberCacheService;
 import com.example.demo.service.UmsMemberService;
 import com.example.demo.util.MemberHolder;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +27,8 @@ import javax.servlet.http.HttpSession;
 public class UmsMemberServiceImpl implements UmsMemberService {
     @Resource
     private UmsMemberMapper umsMemberMapper;
+    @Resource
+    private UmsMemberCacheService umsMemberCacheService;
 
     @Override
     public String getAuthCode(String phone, HttpSession httpSession) {
@@ -37,20 +39,24 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         // 生成验证码
         String authCode = RandomUtil.randomNumbers(6);
         // 保存验证码至session
-        httpSession.setAttribute(UmsMemberConstant.Member.AUTH_CODE + phone, authCode);
+//        httpSession.setAttribute(UmsMemberConstant.Member.AUTH_CODE + phone, authCode);
+        // 保存验证码至redis
+        umsMemberCacheService.setAuthCode(phone, authCode);
         // TODO : 发送验证码
         log.info("发送短信验证码至{}成功，验证码：{}", phone, authCode);
         return authCode;
     }
 
     @Override
-    public void login(LoginParam loginParam, HttpSession httpSession) {
+    public String login(LoginParam loginParam, HttpSession httpSession) {
         // 校验手机号
         if (!PhoneUtil.isPhone(loginParam.getPhone())) {
             throw new RuntimeException("手机号错误，请重新输入！");
         }
         // 从session中获取验证码
-        String authCode = (String) httpSession.getAttribute(UmsMemberConstant.Member.AUTH_CODE + loginParam.getPhone());
+//        String authCode = (String) httpSession.getAttribute(UmsMemberConstant.Member.AUTH_CODE + loginParam.getPhone());
+        // 从redis中获取验证码
+        String authCode = umsMemberCacheService.getAuthCode(loginParam.getPhone());
         // 校验验证码
         if (authCode == null || !authCode.equals(loginParam.getAuthCode())) {
             throw new RuntimeException("验证码错误！");
@@ -67,14 +73,14 @@ public class UmsMemberServiceImpl implements UmsMemberService {
                     .build();
             umsMemberMapper.insert(umsMember);
         }
-        // 保存登录信息
-        httpSession.setAttribute(UmsMemberConstant.Member.MEMBER_LOGIN, BeanUtil.copyProperties(umsMember, MemberDto.class));
+        // 保存登录信息至session
+//        httpSession.setAttribute(UmsMemberConstant.Member.MEMBER_LOGIN, BeanUtil.copyProperties(umsMember, MemberDto.class));
+        // 保存登录信息至redis
+        return umsMemberCacheService.setMember(umsMember);
     }
 
     @Override
     public MemberDto info() {
         return MemberHolder.get();
     }
-
-
 }

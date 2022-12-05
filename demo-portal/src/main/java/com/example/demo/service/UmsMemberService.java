@@ -24,7 +24,7 @@ public interface UmsMemberService {
      * @param loginParam
      * @param httpSession
      */
-    void login(LoginParam loginParam, HttpSession httpSession);
+    String login(LoginParam loginParam, HttpSession httpSession);
 
     /**
      * 获取用户信息

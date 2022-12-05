@@ -33,8 +33,8 @@ public class UmsMemberController {
     @PostMapping(value = "login", produces = "application/json;charset=UTF-8")
     public CommonResult login(@Valid @RequestBody LoginParam loginParam,
                               HttpSession httpSession){
-        umsMemberService.login(loginParam, httpSession);
-        return CommonResult.success("登录成功");
+        String token = umsMemberService.login(loginParam, httpSession);
+        return CommonResult.success(token, "登录成功");
     }
 
     @ApiOperation(value = "获取会员信息")

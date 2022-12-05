@@ -40,3 +40,18 @@ management:
     redis:
       enabled: false
 
+# 自定义redis
+redis:
+  database: demo
+  key:
+    authCode: "ums:authCode" # 登录验证码
+    member: "ums:member" # 用户信息
+  expire:
+    authCode: 120 # 验证码超期时间
+    common: 86400 # 24小时
+
+jwt:
+  tokenHeader: Authorization # JWT存储的请求头
+  tokenHead: 'Bearer ' # JWT负载中的开头
+  secret: demo-portal-secret # JWT加解密使用的密钥
+  expiration: 604800 # JWT的超期限时间(60*60*24*7)
