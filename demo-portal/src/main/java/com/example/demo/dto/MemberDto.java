@@ -1,5 +1,7 @@
 package com.example.demo.dto;
 
+import com.example.demo.desensitization.Sensitive;
+import com.example.demo.desensitization.SensitiveStrategy;
 import com.example.demo.entity.SysFile;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -20,6 +22,7 @@ public class MemberDto {
     @ApiModelProperty(value = "用户名")
     private String name;
 
+    @Sensitive(value = SensitiveStrategy.MOBILE_PHONE)
     @ApiModelProperty(value = "电话")
     private String phone;
 
