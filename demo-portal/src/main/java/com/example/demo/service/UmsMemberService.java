@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.LoginDto;
-import com.example.demo.entity.UmsMember;
+import com.example.demo.dto.LoginParam;
+import com.example.demo.dto.MemberDto;
 
 import javax.servlet.http.HttpSession;
 
@@ -21,14 +21,14 @@ public interface UmsMemberService {
 
     /**
      * 用户登录
-     * @param loginDto
+     * @param loginParam
      * @param httpSession
      */
-    void login(LoginDto loginDto, HttpSession httpSession);
+    void login(LoginParam loginParam, HttpSession httpSession);
 
     /**
      * 获取用户信息
      * @return
      */
-    UmsMember info();
+    MemberDto info();
 }

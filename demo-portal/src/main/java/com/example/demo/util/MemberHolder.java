@@ -1,19 +1,19 @@
 package com.example.demo.util;
 
-import com.example.demo.entity.UmsMember;
+import com.example.demo.dto.MemberDto;
 
 /**
  * 线程变量操作工具类
  * Created by YuanJW on 2022/12/4.
  */
 public class MemberHolder {
-    private static final ThreadLocal<UmsMember> THREAD_LOCAL = new ThreadLocal<>();
+    private static final ThreadLocal<MemberDto> THREAD_LOCAL = new ThreadLocal<>();
 
-    public static void set(UmsMember umsMember) {
-        THREAD_LOCAL.set(umsMember);
+    public static void set(MemberDto memberDto) {
+        THREAD_LOCAL.set(memberDto);
     }
 
-    public static UmsMember get() {
+    public static MemberDto get() {
         return THREAD_LOCAL.get();
     }
 

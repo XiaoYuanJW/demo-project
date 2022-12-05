@@ -2,7 +2,7 @@ package com.example.demo.interceptor;
 
 import com.example.demo.api.ResultCode;
 import com.example.demo.constant.UmsMemberConstant;
-import com.example.demo.entity.UmsMember;
+import com.example.demo.dto.MemberDto;
 import com.example.demo.util.MemberHolder;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -21,14 +21,14 @@ public class LoginInterceptor implements HandlerInterceptor {
         // 获取session
         HttpSession session = request.getSession();
         // 从session中获取用户信息
-        UmsMember umsMember = (UmsMember) session.getAttribute(UmsMemberConstant.Member.MEMBER_LOGIN);
-        if (umsMember == null) {
+        MemberDto member = (MemberDto) session.getAttribute(UmsMemberConstant.Member.MEMBER_LOGIN);
+        if (member == null) {
             // 拦截异常
             response.setStatus((int) ResultCode.UNAUTHORIZED.getCode());
             return false;
         }
         // 保存用户信息到ThreadLocal
-        MemberHolder.set(umsMember);
+        MemberHolder.set(member);
         return true;
     }
 

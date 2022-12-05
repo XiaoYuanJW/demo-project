@@ -1,11 +1,13 @@
 package com.example.demo.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.PhoneUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.demo.constant.UmsMemberConstant;
-import com.example.demo.dto.LoginDto;
+import com.example.demo.dto.LoginParam;
+import com.example.demo.dto.MemberDto;
 import com.example.demo.entity.UmsMember;
 import com.example.demo.mapper.UmsMemberMapper;
 import com.example.demo.service.UmsMemberService;
@@ -42,35 +44,35 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     }
 
     @Override
-    public void login(LoginDto loginDto, HttpSession httpSession) {
+    public void login(LoginParam loginParam, HttpSession httpSession) {
         // 校验手机号
-        if (!PhoneUtil.isPhone(loginDto.getPhone())) {
+        if (!PhoneUtil.isPhone(loginParam.getPhone())) {
             throw new RuntimeException("手机号错误，请重新输入！");
         }
         // 从session中获取验证码
-        String authCode = (String) httpSession.getAttribute(UmsMemberConstant.Member.AUTH_CODE + loginDto.getPhone());
+        String authCode = (String) httpSession.getAttribute(UmsMemberConstant.Member.AUTH_CODE + loginParam.getPhone());
         // 校验验证码
-        if (authCode == null || !authCode.equals(loginDto.getAuthCode())) {
+        if (authCode == null || !authCode.equals(loginParam.getAuthCode())) {
             throw new RuntimeException("验证码错误！");
         }
         // 查询用户信息
         UmsMember umsMember = umsMemberMapper.selectOne(new LambdaQueryWrapper<UmsMember>()
-                .eq(UmsMember::getPhone, loginDto.getPhone()));
+                .eq(UmsMember::getPhone, loginParam.getPhone()));
         if (ObjectUtil.isNull(umsMember)) {
             // 创建新用户
             umsMember = UmsMember.builder()
                     .name(UmsMemberConstant.Member.NAME_PREFIX + RandomUtil.randomString(6))
-                    .phone(loginDto.getPhone())
+                    .phone(loginParam.getPhone())
                     .password(RandomUtil.randomString(10))
                     .build();
             umsMemberMapper.insert(umsMember);
         }
         // 保存登录信息
-        httpSession.setAttribute(UmsMemberConstant.Member.MEMBER_LOGIN, umsMember);
+        httpSession.setAttribute(UmsMemberConstant.Member.MEMBER_LOGIN, BeanUtil.copyProperties(umsMember, MemberDto.class));
     }
 
     @Override
-    public UmsMember info() {
+    public MemberDto info() {
         return MemberHolder.get();
     }
 

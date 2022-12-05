@@ -1,8 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.api.CommonResult;
-import com.example.demo.dto.LoginDto;
-import com.example.demo.interceptor.LoginInterceptor;
+import com.example.demo.dto.LoginParam;
 import com.example.demo.service.UmsMemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -32,9 +31,9 @@ public class UmsMemberController {
 
     @ApiOperation(value = "用户登录")
     @PostMapping(value = "login", produces = "application/json;charset=UTF-8")
-    public CommonResult login(@Valid @RequestBody LoginDto loginDto,
+    public CommonResult login(@Valid @RequestBody LoginParam loginParam,
                               HttpSession httpSession){
-        umsMemberService.login(loginDto, httpSession);
+        umsMemberService.login(loginParam, httpSession);
         return CommonResult.success("登录成功");
     }
 
