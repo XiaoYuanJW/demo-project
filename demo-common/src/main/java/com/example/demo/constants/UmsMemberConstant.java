@@ -1,4 +1,4 @@
-package com.example.demo.constant;
+package com.example.demo.constants;
 
 /**
  * Created by YuanJW on 2022/12/4.

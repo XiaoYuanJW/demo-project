@@ -11,8 +11,7 @@ import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.example.demo.entity.SysFile;
 import com.example.demo.mapper.SysFileMapper;
 import com.example.demo.service.SysFileService;
-import io.minio.MinioClient;
-import io.minio.policy.PolicyType;
+import io.minio.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -81,13 +80,19 @@ public class SysFileServiceImpl implements SysFileService {
     public SysFile uploadFile(MultipartFile file) {
         // 创建MinIO的Java客户端
         try {
-            MinioClient minioClient = new MinioClient(ENDPOINT, ACCESS_KEY, SECRET_KEY);
-            boolean isExist = minioClient.bucketExists(BUCKET_NAME);
+            MinioClient minioClient = MinioClient.builder()
+                    .endpoint(ENDPOINT)
+                    .credentials(ACCESS_KEY, SECRET_KEY)
+                    .build();
+            boolean isExist = minioClient.bucketExists(BucketExistsArgs.builder().bucket(BUCKET_NAME).build());
             if (!isExist) {
                 // 创建存储桶
-                minioClient.makeBucket(BUCKET_NAME);
+                minioClient.makeBucket(MakeBucketArgs.builder().bucket(BUCKET_NAME).build());
                 // 设置只读权限
-                minioClient.setBucketPolicy(BUCKET_NAME, "*.*", PolicyType.READ_ONLY);
+                SetBucketPolicyArgs setBucketPolicyArgs = SetBucketPolicyArgs.builder()
+                        .bucket(BUCKET_NAME)
+                        .build();
+                minioClient.setBucketPolicy(setBucketPolicyArgs);
             } else {
                 log.info("存储桶已经存在");
             }
@@ -101,7 +106,12 @@ public class SysFileServiceImpl implements SysFileService {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
             String objectName = sdf.format(new Date()) + "/" + id + '.' + suffix;
             // 上传文件至存储桶中
-            minioClient.putObject(BUCKET_NAME, objectName, file.getInputStream(), file.getContentType());
+            PutObjectArgs putObjectArgs = PutObjectArgs.builder()
+                    .bucket(BUCKET_NAME)
+                    .object(objectName)
+                    .contentType(file.getContentType())
+                    .stream(file.getInputStream(), file.getSize(), ObjectWriteArgs.MIN_MULTIPART_SIZE).build();
+            minioClient.putObject(putObjectArgs);
             log.info("文件上传成功：{}", objectName);
             // 存储文件信息
             SysFile sysFile = SysFile.builder()
@@ -139,9 +149,12 @@ public class SysFileServiceImpl implements SysFileService {
             throw new RuntimeException("文件不存在");
         }
         try {
-            MinioClient minioClient = new MinioClient(ENDPOINT, ACCESS_KEY, SECRET_KEY);
+            MinioClient minioClient = MinioClient.builder()
+                    .endpoint(ENDPOINT)
+                    .credentials(ACCESS_KEY, SECRET_KEY)
+                    .build();
             // 获取文件字节码
-            byte[] fileBytes = IoUtil.readBytes(minioClient.getObject(BUCKET_NAME, sysFile.getObjectName()));
+            byte[] fileBytes = IoUtil.readBytes(minioClient.getObject(GetObjectArgs.builder().bucket(BUCKET_NAME).object(sysFile.getObjectName()).build()));
             // 设置response
             response.reset();
             response.setHeader("Content-Disposition" , "attachment; filename=\"" + URLUtil.encode(sysFile.getOriginName()) + "\"");
@@ -166,9 +179,12 @@ public class SysFileServiceImpl implements SysFileService {
             throw new RuntimeException("文件不存在");
         }
         try {
-            MinioClient minioClient = new MinioClient(ENDPOINT, ACCESS_KEY, SECRET_KEY);
+            MinioClient minioClient = MinioClient.builder()
+                    .endpoint(ENDPOINT)
+                    .credentials(ACCESS_KEY, SECRET_KEY)
+                    .build();
             // 获取文件字节码
-            byte[] fileBytes = IoUtil.readBytes(minioClient.getObject(BUCKET_NAME, sysFile.getObjectName()));
+            byte[] fileBytes = IoUtil.readBytes(minioClient.getObject(GetObjectArgs.builder().bucket(BUCKET_NAME).object(sysFile.getObjectName()).build()));
             // 设置contentType
             response.setContentType(MediaType.IMAGE_JPEG_VALUE);
             // 获取outputStream
@@ -188,8 +204,11 @@ public class SysFileServiceImpl implements SysFileService {
         }
         sysFileMapper.deleteById(id);
         try {
-            MinioClient minioClient = new MinioClient(ENDPOINT, ACCESS_KEY, SECRET_KEY);
-            minioClient.removeObject(BUCKET_NAME, sysFile.getObjectName());
+            MinioClient minioClient = MinioClient.builder()
+                    .endpoint(ENDPOINT)
+                    .credentials(ACCESS_KEY, SECRET_KEY)
+                    .build();
+            minioClient.removeObject(RemoveObjectArgs.builder().bucket(BUCKET_NAME).object(sysFile.getObjectName()).build());
         } catch (Exception e) {
             log.info("文件删除失败：{}", e.getMessage());
             throw new RuntimeException("文件删除失败");
@@ -209,10 +228,13 @@ public class SysFileServiceImpl implements SysFileService {
         sysFileMapper.deleteBatchIds(ids);
         MinioClient minioClient = null;
         try {
-            minioClient = new MinioClient(ENDPOINT, ACCESS_KEY, SECRET_KEY);
+            minioClient = MinioClient.builder()
+                    .endpoint(ENDPOINT)
+                    .credentials(ACCESS_KEY, SECRET_KEY)
+                    .build();
             for (SysFile sysFile : sysFiles) {
                 try {
-                    minioClient.removeObject(BUCKET_NAME, sysFile.getObjectName());
+                    minioClient.removeObject(RemoveObjectArgs.builder().bucket(BUCKET_NAME).object(sysFile.getObjectName()).build());
                 } catch (Exception e) {
                     log.info("文件删除失败：{}", e.getMessage());
                     throw new RuntimeException("文件删除失败");

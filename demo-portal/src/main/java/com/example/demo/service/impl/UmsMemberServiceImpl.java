@@ -4,7 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.PhoneUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.example.demo.constant.UmsMemberConstant;
+import com.example.demo.constants.UmsMemberConstant;
 import com.example.demo.dto.LoginParam;
 import com.example.demo.dto.MemberDto;
 import com.example.demo.entity.UmsMember;

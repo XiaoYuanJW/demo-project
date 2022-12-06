@@ -4,9 +4,13 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.example.demo.validator.groups.update;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.validator.constraints.Length;
@@ -29,7 +33,7 @@ import java.util.Date;
 @TableName(value ="ums_member")
 @ApiModel(value = "UmsMember", description = "用户表")
 public class UmsMember extends BaseEntity {
-    @NotNull(message="[用户id]不能为空")
+    @NotNull(message="[用户id]不能为空", groups = {update.class})
     @TableId(value = "id", type = IdType.AUTO)
     @ApiModelProperty(value = "用户id")
     private Long id;
