@@ -1,6 +1,7 @@
 package com.example.demo.config;
 
 import com.example.demo.interceptor.LoginInterceptor;
+import com.example.demo.interceptor.TokenInterceptor;
 import com.example.demo.service.UmsMemberCacheService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -24,10 +25,15 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginInterceptor(umsMemberCacheService, tokenHeader, tokenHead))
+        // token拦截器
+        registry.addInterceptor(new TokenInterceptor(umsMemberCacheService, tokenHeader, tokenHead))
+                .addPathPatterns("/**")
+                .order(0);
+        // 登录验证拦截器
+        registry.addInterceptor(new LoginInterceptor())
                 .excludePathPatterns(
                         "/member/getAuthCode",
                         "/member/login"
-                );
+                ).order(1);
     }
 }
