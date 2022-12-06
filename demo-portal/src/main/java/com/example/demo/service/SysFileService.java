@@ -80,5 +80,5 @@ public interface SysFileService {
      * @param id
      * @param response
      */
-    void preview(Long id, HttpServletResponse response);
+    void preview(Long id, HttpServletResponse response);    
 }

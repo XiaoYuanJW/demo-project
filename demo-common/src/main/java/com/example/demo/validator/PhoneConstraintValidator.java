@@ -11,6 +11,11 @@ import javax.validation.ConstraintValidatorContext;
  * Created by YuanJW on 2022/12/2.
  */
 public class PhoneConstraintValidator implements ConstraintValidator<Phone, String> {
+
+    @Override
+    public void initialize(Phone constraintAnnotation) {
+    }
+
     @Override
     public boolean isValid(String phone, ConstraintValidatorContext constraintValidatorContext) {
         return Validator.isMobile(phone);

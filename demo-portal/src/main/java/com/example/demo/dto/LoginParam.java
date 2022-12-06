@@ -1,5 +1,6 @@
 package com.example.demo.dto;
 
+import com.example.demo.validator.constraints.Phone;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -16,6 +17,7 @@ import javax.validation.constraints.NotNull;
 @ApiModel(value = "LoginParam", description = "登录参数")
 public class LoginParam {
     @NotNull(message = "手机号不能为空")
+    @Phone(message = "手机号格式有误")
     @ApiModelProperty(value = "手机号")
     private String phone;
     @ApiModelProperty(value = "密码")
