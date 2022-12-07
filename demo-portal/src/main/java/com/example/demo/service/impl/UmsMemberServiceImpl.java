@@ -1,14 +1,18 @@
 package com.example.demo.service.impl;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.PhoneUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.example.demo.constants.SysFileConstant;
 import com.example.demo.constants.UmsMemberConstant;
 import com.example.demo.dto.LoginParam;
 import com.example.demo.dto.MemberDto;
+import com.example.demo.entity.SysFile;
 import com.example.demo.entity.UmsMember;
 import com.example.demo.mapper.UmsMemberMapper;
+import com.example.demo.service.SysFileService;
 import com.example.demo.service.UmsMemberCacheService;
 import com.example.demo.service.UmsMemberService;
 import com.example.demo.util.MemberHolder;
@@ -17,6 +21,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 会员信息操作接口实现类
@@ -29,6 +36,8 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     private UmsMemberMapper umsMemberMapper;
     @Resource
     private UmsMemberCacheService umsMemberCacheService;
+    @Resource
+    private SysFileService sysFileService;
 
     @Override
     public String getAuthCode(String phone, HttpSession httpSession) {
@@ -50,9 +59,9 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     @Override
     public String login(LoginParam loginParam, HttpSession httpSession) {
         // 校验手机号
-        if (!PhoneUtil.isPhone(loginParam.getPhone())) {
-            throw new RuntimeException("手机号错误，请重新输入！");
-        }
+//        if (!PhoneUtil.isPhone(loginParam.getPhone())) {
+//            throw new RuntimeException("手机号错误，请重新输入！");
+//        }
         // 从session中获取验证码
 //        String authCode = (String) httpSession.getAttribute(UmsMemberConstant.Member.AUTH_CODE + loginParam.getPhone());
         // 从redis中获取验证码
@@ -73,6 +82,9 @@ public class UmsMemberServiceImpl implements UmsMemberService {
                     .build();
             umsMemberMapper.insert(umsMember);
         }
+        List<SysFile> fileList = sysFileService.getFileList(umsMember.getAvatar());
+        Map<String, Object> avatar = MapUtil.builder(new HashMap<String, Object>()).put(SysFileConstant.Member.AVATAR, fileList).build();
+        umsMember.setFiles(avatar);
         // 保存登录信息至session
 //        httpSession.setAttribute(UmsMemberConstant.Member.MEMBER_LOGIN, BeanUtil.copyProperties(umsMember, MemberDto.class));
         // 保存登录信息至redis

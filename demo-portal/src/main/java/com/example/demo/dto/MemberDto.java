@@ -2,14 +2,13 @@ package com.example.demo.dto;
 
 import com.example.demo.desensitization.Sensitive;
 import com.example.demo.desensitization.SensitiveStrategy;
-import com.example.demo.entity.SysFile;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.util.Date;
-import java.util.List;
+import java.util.Map;
 
 /**
  * 用户返回信息
@@ -62,6 +61,6 @@ public class MemberDto {
     @ApiModelProperty(value = "历史积分值")
     private Integer historyIntegration;
 
-    @ApiModelProperty(value = "文件信息")
-    private List<SysFile> files;
+    @ApiModelProperty(hidden = true)
+    private Map<String, Object> files;
 }

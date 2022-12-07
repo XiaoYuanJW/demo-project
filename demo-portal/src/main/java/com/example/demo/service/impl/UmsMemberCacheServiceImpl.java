@@ -8,6 +8,7 @@ import com.example.demo.mapper.UmsMemberMapper;
 import com.example.demo.service.RedisService;
 import com.example.demo.service.UmsMemberCacheService;
 import com.example.demo.utils.JwtTokenUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ import java.util.Map;
  * 用户信息缓存业务实现类
  * Created by YuanJW on 2022/12/5.
  */
+@Slf4j
 @Service
 public class UmsMemberCacheServiceImpl implements UmsMemberCacheService {
     @Resource
@@ -56,23 +58,24 @@ public class UmsMemberCacheServiceImpl implements UmsMemberCacheService {
         // 生成token作为登录令牌
         String token = jwtTokenUtils.generateToken(umsMember.getName());
         // 数据对象转换
-        BeanUtil.copyProperties(umsMember, MemberDto.class);
+        MemberDto memberDto = BeanUtil.copyProperties(umsMember, MemberDto.class);
         // 将对象转换为Hash结构
-        Map<String, Object> value = BeanUtil.beanToMap(umsMember);
+        Map<String, Object> value = BeanUtil.beanToMap(memberDto);
         // 保存用户信息至redis中
-        redisService.hSetAll(REDIS_KEY_MEMBER + token, value, REDIS_EXPIRE_COMMON);
+        redisService.hSetAll(REDIS_KEY_MEMBER + ":" + token, value, REDIS_EXPIRE_COMMON);
         return token;
     }
 
     @Override
     public MemberDto getMember(String token) {
-        Map<Object, Object> map = redisService.hGetAll(REDIS_KEY_MEMBER + token);
-        MemberDto memberDto = BeanUtil.fillBeanWithMap(map, new MemberDto(), false);
+        Map<Object, Object> value = redisService.hGetAll(REDIS_KEY_MEMBER + ":" + token);
+        MemberDto memberDto = BeanUtil.mapToBean(value, MemberDto.class, false);
+//        = BeanUtil.fillBeanWithMap(value, new MemberDto(), false);
         return memberDto;
     }
 
     @Override
     public void fresh(String token) {
-        redisService.expire(token, REDIS_EXPIRE_COMMON);
+        redisService.expire(REDIS_KEY_MEMBER + ":" + token, REDIS_EXPIRE_COMMON);
     }
 }

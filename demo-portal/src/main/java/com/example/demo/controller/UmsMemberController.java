@@ -30,7 +30,7 @@ public class UmsMemberController {
     }
 
     @ApiOperation(value = "用户登录")
-    @PostMapping(value = "login", produces = "application/json;charset=UTF-8")
+    @PostMapping(value = "/login", produces = "application/json;charset=UTF-8")
     public CommonResult login(@Valid @RequestBody LoginParam loginParam,
                               HttpSession httpSession){
         String token = umsMemberService.login(loginParam, httpSession);

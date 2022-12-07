@@ -15,7 +15,6 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -63,12 +62,12 @@ public class BaseEntity implements Serializable {
     private String searchValue;
 
     @TableField(exist = false)
-    @ApiModelProperty(value = "文件信息")
-    private List<SysFile> files;
+    @ApiModelProperty(hidden = true)
+    private Map<String, Object> params;
 
     @TableField(exist = false)
     @ApiModelProperty(hidden = true)
-    private Map<String, Object> params;
+    private Map<String, Object> files;
 
     public Map<String, Object> getParams() {
         if (params == null) {

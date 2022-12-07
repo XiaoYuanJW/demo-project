@@ -9,6 +9,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.example.demo.entity.SysFile;
+import com.example.demo.enums.CommonEnum;
 import com.example.demo.mapper.SysFileMapper;
 import com.example.demo.service.SysFileService;
 import io.minio.*;
@@ -116,7 +117,7 @@ public class SysFileServiceImpl implements SysFileService {
             // 存储文件信息
             SysFile sysFile = SysFile.builder()
                     .id(id)
-                    .location(2)
+                    .location(CommonEnum.FileLocationEnum.MINIO.getType())
                     .bucket(BUCKET_NAME)
                     .originName(filename)
                     .suffix(suffix)
@@ -135,10 +136,13 @@ public class SysFileServiceImpl implements SysFileService {
 
     @Override
     public List<SysFile> getFileList(String files) {
-        List<SysFile> fileList = Arrays.stream(files.split(","))
-                .map(file -> sysFileMapper.selectById(Convert.toLong(file)))
-                .distinct()
-                .collect(Collectors.toList());
+        List<SysFile> fileList = null;
+        if (StrUtil.isNotBlank(files)) {
+            fileList = Arrays.stream(files.split(","))
+                    .map(file -> sysFileMapper.selectById(Convert.toLong(file)))
+                    .distinct()
+                    .collect(Collectors.toList());
+        }
         return fileList;
     }
 

@@ -1,9 +1,16 @@
 package com.example.demo.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.validator.constraints.Length;
@@ -25,8 +32,10 @@ import java.math.BigDecimal;
 @TableName(value ="sys_file")
 @ApiModel(value = "SysFile", description = "文件信息实体类")
 public class SysFile extends BaseEntity {
+    @JsonSerialize(using = ToStringSerializer.class)
     @NotNull(message="[文件id]不能为空")
     @ApiModelProperty(value = "文件id")
+    @TableId(type = IdType.INPUT)
     private Long id;
     
     @NotNull(message="[文件存储位置：1->本地 2->minio]不能为空")
@@ -58,6 +67,6 @@ public class SysFile extends BaseEntity {
 
     @Size(max= 255,message="编码长度不能超过255")
     @Length(max= 255,message="编码长度不能超过512")
-    @ApiModelProperty(value = "更新者")
+    @ApiModelProperty(value = "文件路径")
     private String path;
 }
