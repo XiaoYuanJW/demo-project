@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.example.demo.validator.groups.update;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -34,7 +35,7 @@ import java.util.Date;
 @TableName(value ="sms_store")
 @ApiModel(value = "SmsStore", description = "商铺表")
 public class SmsStore extends BaseEntity{
-    @NotNull(message="[商铺id]不能为空")
+    @NotNull(message="[商铺id]不能为空", groups = {update.class})
     @TableId(value = "id", type = IdType.AUTO)
     @ApiModelProperty(value = "商铺id")
     private Long id;

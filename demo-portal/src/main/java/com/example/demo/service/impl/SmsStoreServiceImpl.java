@@ -11,6 +11,8 @@ import com.example.demo.service.SmsStoreService;
 import com.example.demo.service.SysFileService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -43,8 +45,6 @@ public class SmsStoreServiceImpl implements SmsStoreService {
         if (MapUtil.isNotEmpty(value)) {
             // 缓存存在直接返回商铺信息
             smsStore = BeanUtil.fillBeanWithMap(value, new SmsStore(), false);
-            // 刷新商铺信息缓存过期时间
-            redisService.expire(key, REDIS_EXPIRE_COMMON);
             return smsStore;
         }
         // 从数据库中获取商铺信息
@@ -59,5 +59,15 @@ public class SmsStoreServiceImpl implements SmsStoreService {
             redisService.hSetAll(key, map, REDIS_EXPIRE_COMMON);
         }
         return smsStore;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void update(SmsStore smsStore) {
+        String key = REDIS_KEY_STORE + ":" + smsStore.getId();
+        // 更新数据库
+        smsStoreMapper.updateById(smsStore);
+        // 删除缓存
+        redisService.del(key);
     }
 }

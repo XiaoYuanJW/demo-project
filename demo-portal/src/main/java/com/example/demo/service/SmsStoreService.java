@@ -13,4 +13,10 @@ public interface SmsStoreService {
      * @return
      */
     SmsStore detail(Long id);
+
+    /**
+     * 修改商铺信息
+     * @param smsStore
+     */
+    void update(SmsStore smsStore);
 }
