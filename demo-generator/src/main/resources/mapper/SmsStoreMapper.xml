@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.SmsStoreMapper">
+    <resultMap id="BaseResultMap" type="com.example.demo.entity.SmsStore">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="TINYINT"/>
+        <result property="categoryId" column="category_id" jdbcType="BIGINT"/>
+        <result property="introduce" column="introduce" jdbcType="VARCHAR"/>
+        <result property="sale" column="sale" jdbcType="INTEGER"/>
+        <result property="image" column="image" jdbcType="VARCHAR"/>
+        <result property="detailArea" column="detail_area" jdbcType="VARCHAR"/>
+        <result property="lat" column="lat" jdbcType="DECIMAL"/>
+        <result property="lng" column="lng" jdbcType="DECIMAL"/>
+        <result property="sort" column="sort" jdbcType="INTEGER"/>
+        <result property="showStatus" column="show_status" jdbcType="TINYINT"/>
+        <result property="enableStatus" column="enable_status" jdbcType="TINYINT"/>
+        <result property="recommandStatus" column="recommand_status" jdbcType="INTEGER"/>
+        <result property="verifyStatus" column="verify_status" jdbcType="INTEGER"/>
+        <result property="businessStartTime" column="business_start_time" jdbcType="TIMESTAMP"/>
+        <result property="businessEndTime" column="business_end_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
+        <result property="creator" column="creator" jdbcType="VARCHAR"/>
+        <result property="gmtModified" column="gmt_modified" jdbcType="TIMESTAMP"/>
+        <result property="modifier" column="modifier" jdbcType="VARCHAR"/>
+        <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, name, phone, type, category_id, introduce, sale, image, detail_area, lat, lng, sort, show_status, enable_status, recommand_status, verify_status, business_start_time, business_end_time, remark, gmt_create, creator, gmt_modified, modifier, is_delete
+    </sql>
+
+    <sql id="queryCondition">
+        <if test="id != null">and id = #{id,jdbcType=BIGINT}</if>
+        <if test="name != null">and name = #{name,jdbcType=VARCHAR}</if>
+        <if test="phone != null">and phone = #{phone,jdbcType=VARCHAR}</if>
+        <if test="type != null">and type = #{type,jdbcType=TINYINT}</if>
+        <if test="categoryId != null">and category_id = #{categoryId,jdbcType=BIGINT}</if>
+        <if test="introduce != null">and introduce = #{introduce,jdbcType=VARCHAR}</if>
+        <if test="sale != null">and sale = #{sale,jdbcType=INTEGER}</if>
+        <if test="image != null">and image = #{image,jdbcType=VARCHAR}</if>
+        <if test="detailArea != null">and detail_area = #{detailArea,jdbcType=VARCHAR}</if>
+        <if test="lat != null">and lat = #{lat,jdbcType=DECIMAL}</if>
+        <if test="lng != null">and lng = #{lng,jdbcType=DECIMAL}</if>
+        <if test="sort != null">and sort = #{sort,jdbcType=INTEGER}</if>
+        <if test="showStatus != null">and show_status = #{showStatus,jdbcType=TINYINT}</if>
+        <if test="enableStatus != null">and enable_status = #{enableStatus,jdbcType=TINYINT}</if>
+        <if test="recommandStatus != null">and recommand_status = #{recommandStatus,jdbcType=INTEGER}</if>
+        <if test="verifyStatus != null">and verify_status = #{verifyStatus,jdbcType=INTEGER}</if>
+        <if test="businessStartTime != null">and business_start_time = #{businessStartTime,jdbcType=TIMESTAMP}</if>
+        <if test="businessEndTime != null">and business_end_time = #{businessEndTime,jdbcType=TIMESTAMP}</if>
+        <if test="remark != null">and remark = #{remark,jdbcType=VARCHAR}</if>
+        <if test="gmtCreate != null">and gmt_create = #{gmtCreate,jdbcType=TIMESTAMP}</if>
+        <if test="creator != null">and creator = #{creator,jdbcType=VARCHAR}</if>
+        <if test="gmtModified != null">and gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}</if>
+        <if test="modifier != null">and modifier = #{modifier,jdbcType=VARCHAR}</if>
+        <if test="isDelete != null">and is_delete = #{isDelete,jdbcType=TINYINT}</if>
+    </sql>
+
+    <insert id="saveSmsStore" keyColumn="id" keyProperty="id" parameterType="com.example.demo.entity.SmsStore" useGeneratedKeys="true">
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO sms_store (id, name, phone, type, category_id, introduce, sale, image, detail_area, lat, lng, sort, show_status, enable_status, recommand_status, verify_status, business_start_time, business_end_time, remark, gmt_create, creator, gmt_modified, modifier, is_delete)
+        VALUES (
+            #{id,jdbcType=BIGINT},
+            #{name,jdbcType=VARCHAR},
+            #{phone,jdbcType=VARCHAR},
+            #{type,jdbcType=TINYINT},
+            #{categoryId,jdbcType=BIGINT},
+            #{introduce,jdbcType=VARCHAR},
+            #{sale,jdbcType=INTEGER},
+            #{image,jdbcType=VARCHAR},
+            #{detailArea,jdbcType=VARCHAR},
+            #{lat,jdbcType=DECIMAL},
+            #{lng,jdbcType=DECIMAL},
+            #{sort,jdbcType=INTEGER},
+            #{showStatus,jdbcType=TINYINT},
+            #{enableStatus,jdbcType=TINYINT},
+            #{recommandStatus,jdbcType=INTEGER},
+            #{verifyStatus,jdbcType=INTEGER},
+            #{businessStartTime,jdbcType=TIMESTAMP},
+            #{businessEndTime,jdbcType=TIMESTAMP},
+            #{remark,jdbcType=VARCHAR},
+            #{gmtCreate,jdbcType=TIMESTAMP},
+            #{creator,jdbcType=VARCHAR},
+            #{gmtModified,jdbcType=TIMESTAMP},
+            #{modifier,jdbcType=VARCHAR},
+            #{isDelete,jdbcType=TINYINT}
+        )
+    </insert>
+
+    <select id="getSmsStoreById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM sms_store
+        WHERE id = #{id,jdbcType=BIGINT} 
+    </select>
+
+    <select id="getSmsStores" parameterType="com.example.demo.entity.SmsStore" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM sms_store
+        <where>
+            <include refid="queryCondition"></include>
+        </where>
+    </select>
+    
+    <delete id="deleteSmsStores" parameterType="java.util.List">
+        DELETE FROM sms_store
+        <where>
+         id IN
+            <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </where>
+    </delete>
+
+    <update id="updateSmsStore" parameterType="com.example.demo.entity.SmsStore">
+        UPDATE sms_store
+        <set>
+            <if test="name != null">name = #{name,jdbcType=VARCHAR},</if>
+            <if test="phone != null">phone = #{phone,jdbcType=VARCHAR},</if>
+            <if test="type != null">type = #{type,jdbcType=TINYINT},</if>
+            <if test="categoryId != null">category_id = #{categoryId,jdbcType=BIGINT},</if>
+            <if test="introduce != null">introduce = #{introduce,jdbcType=VARCHAR},</if>
+            <if test="sale != null">sale = #{sale,jdbcType=INTEGER},</if>
+            <if test="image != null">image = #{image,jdbcType=VARCHAR},</if>
+            <if test="detailArea != null">detail_area = #{detailArea,jdbcType=VARCHAR},</if>
+            <if test="lat != null">lat = #{lat,jdbcType=DECIMAL},</if>
+            <if test="lng != null">lng = #{lng,jdbcType=DECIMAL},</if>
+            <if test="sort != null">sort = #{sort,jdbcType=INTEGER},</if>
+            <if test="showStatus != null">show_status = #{showStatus,jdbcType=TINYINT},</if>
+            <if test="enableStatus != null">enable_status = #{enableStatus,jdbcType=TINYINT},</if>
+            <if test="recommandStatus != null">recommand_status = #{recommandStatus,jdbcType=INTEGER},</if>
+            <if test="verifyStatus != null">verify_status = #{verifyStatus,jdbcType=INTEGER},</if>
+            <if test="businessStartTime != null">business_start_time = #{businessStartTime,jdbcType=TIMESTAMP},</if>
+            <if test="businessEndTime != null">business_end_time = #{businessEndTime,jdbcType=TIMESTAMP},</if>
+            <if test="remark != null">remark = #{remark,jdbcType=VARCHAR},</if>
+            <if test="gmtCreate != null">gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},</if>
+            <if test="creator != null">creator = #{creator,jdbcType=VARCHAR},</if>
+            <if test="gmtModified != null">gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},</if>
+            <if test="modifier != null">modifier = #{modifier,jdbcType=VARCHAR},</if>
+            <if test="isDelete != null">is_delete = #{isDelete,jdbcType=TINYINT},</if>
+        </set>
+        WHERE id = #{id,jdbcType=BIGINT} 
+    </update>
+    
+    <select id="countSmsStore" parameterType="com.example.demo.entity.SmsStore" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM sms_store
+        <where>
+            <include refid="queryCondition"></include>
+        </where>
+    </select>
+</mapper>
