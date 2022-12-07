@@ -24,14 +24,14 @@ import java.util.function.Consumer;
 @RestControllerAdvice
 public class WebExceptionHandler {
 
-    @ExceptionHandler(RuntimeException.class)
-    public CommonResult handleRuntimeException(RuntimeException e, HttpServletRequest request) {
-        // 获取请求入口
-        String requestURI = request.getRequestURI();
-        // 日志管理
-        log.error("请求地址：{}，异常：{}", requestURI, e.getMessage());
-        return CommonResult.failed(e.getMessage());
-    }
+//    @ExceptionHandler(RuntimeException.class)
+//    public CommonResult handleRuntimeException(RuntimeException e, HttpServletRequest request) {
+//        // 获取请求入口
+//        String requestURI = request.getRequestURI();
+//        // 日志管理
+//        log.error("请求地址：{}，异常：{}", requestURI, e.getMessage());
+//        return CommonResult.failed(e.getMessage());
+//    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public CommonResult handleValidException(MethodArgumentNotValidException e, HttpServletRequest request) {

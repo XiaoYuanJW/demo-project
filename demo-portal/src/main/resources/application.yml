@@ -50,6 +50,7 @@ redis:
   expire:
     authCode: 120 # 验证码超期时间
     common: 86400 # 24小时
+    pierce: 30 # 缓存空对象时间（避免缓存穿透）
 
 jwt:
   tokenHeader: Authorization # JWT存储的请求头

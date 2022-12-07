@@ -2,6 +2,7 @@ package com.example.demo.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.map.MapUtil;
+import com.example.demo.constants.RedisConstant;
 import com.example.demo.constants.SysFileConstant;
 import com.example.demo.entity.SmsStore;
 import com.example.demo.entity.SysFile;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +37,10 @@ public class SmsStoreServiceImpl implements SmsStoreService {
     private String REDIS_KEY_STORE;
     @Value("${redis.expire.common}")
     private Long REDIS_EXPIRE_COMMON;
+    @Value("${redis.expire.pierce}")
+    private Long REDIS_EXPIRE_PIERCE;
+    // 防止缓存穿透的空对象
+    private final static Map<String, Object> nullMap = Collections.singletonMap(RedisConstant.NULL_VALUE_KEY, null);
 
     @Override
     public SmsStore detail(Long id) {
@@ -42,6 +48,10 @@ public class SmsStoreServiceImpl implements SmsStoreService {
         String key = REDIS_KEY_STORE + ":" + id;
         Map<Object, Object> value = redisService.hGetAll(key);
         SmsStore smsStore = null;
+        // 遇到空对象直接返回，防止缓存穿透
+        if (value.equals(nullMap)) {
+            return smsStore;
+        }
         if (MapUtil.isNotEmpty(value)) {
             // 缓存存在直接返回商铺信息
             smsStore = BeanUtil.fillBeanWithMap(value, new SmsStore(), false);
@@ -57,6 +67,9 @@ public class SmsStoreServiceImpl implements SmsStoreService {
             // 数据库存在存入redis缓存
             Map<String, Object> map = BeanUtil.beanToMap(smsStore);
             redisService.hSetAll(key, map, REDIS_EXPIRE_COMMON);
+        } else {
+            // 缓存空对象避免缓存穿透
+            redisService.hSetAll(key, nullMap, REDIS_EXPIRE_PIERCE);
         }
         return smsStore;
     }

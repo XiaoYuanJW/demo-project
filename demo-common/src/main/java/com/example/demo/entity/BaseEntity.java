@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -63,11 +64,12 @@ public class BaseEntity implements Serializable {
 
     @TableField(exist = false)
     @ApiModelProperty(hidden = true)
-    private Map<String, Object> params;
+    private Map<String, Object> files;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @TableField(exist = false)
     @ApiModelProperty(hidden = true)
-    private Map<String, Object> files;
+    private Map<String, Object> params;
 
     public Map<String, Object> getParams() {
         if (params == null) {
