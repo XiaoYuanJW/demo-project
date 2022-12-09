@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.SmsStoreCategoryMapper">
+    <resultMap id="BaseResultMap" type="com.example.demo.entity.SmsStoreCategory">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="parentId" column="parent_id" jdbcType="BIGINT"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="ancestor" column="ancestor" jdbcType="VARCHAR"/>
+        <result property="level" column="level" jdbcType="TINYINT"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="image" column="image" jdbcType="VARCHAR"/>
+        <result property="storeCount" column="store_count" jdbcType="INTEGER"/>
+        <result property="sale" column="sale" jdbcType="INTEGER"/>
+        <result property="sort" column="sort" jdbcType="INTEGER"/>
+        <result property="showStatus" column="show_status" jdbcType="TINYINT"/>
+        <result property="navStatus" column="nav_status" jdbcType="TINYINT"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
+        <result property="creator" column="creator" jdbcType="VARCHAR"/>
+        <result property="gmtModified" column="gmt_modified" jdbcType="TIMESTAMP"/>
+        <result property="modifier" column="modifier" jdbcType="VARCHAR"/>
+        <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, parent_id, name, ancestor, level, description, image, store_count, sale, sort, show_status, nav_status, remark, gmt_create, creator, gmt_modified, modifier, is_delete
+    </sql>
+
+    <sql id="queryCondition">
+        <if test="id != null">and id = #{id,jdbcType=BIGINT}</if>
+        <if test="parentId != null">and parent_id = #{parentId,jdbcType=BIGINT}</if>
+        <if test="name != null">and name = #{name,jdbcType=VARCHAR}</if>
+        <if test="ancestor != null">and ancestor = #{ancestor,jdbcType=VARCHAR}</if>
+        <if test="level != null">and level = #{level,jdbcType=TINYINT}</if>
+        <if test="description != null">and description = #{description,jdbcType=VARCHAR}</if>
+        <if test="image != null">and image = #{image,jdbcType=VARCHAR}</if>
+        <if test="storeCount != null">and store_count = #{storeCount,jdbcType=INTEGER}</if>
+        <if test="sale != null">and sale = #{sale,jdbcType=INTEGER}</if>
+        <if test="sort != null">and sort = #{sort,jdbcType=INTEGER}</if>
+        <if test="showStatus != null">and show_status = #{showStatus,jdbcType=TINYINT}</if>
+        <if test="navStatus != null">and nav_status = #{navStatus,jdbcType=TINYINT}</if>
+        <if test="remark != null">and remark = #{remark,jdbcType=VARCHAR}</if>
+        <if test="gmtCreate != null">and gmt_create = #{gmtCreate,jdbcType=TIMESTAMP}</if>
+        <if test="creator != null">and creator = #{creator,jdbcType=VARCHAR}</if>
+        <if test="gmtModified != null">and gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}</if>
+        <if test="modifier != null">and modifier = #{modifier,jdbcType=VARCHAR}</if>
+        <if test="isDelete != null">and is_delete = #{isDelete,jdbcType=TINYINT}</if>
+    </sql>
+
+    <insert id="saveSmsStoreCategory" keyColumn="id" keyProperty="id" parameterType="com.example.demo.entity.SmsStoreCategory" useGeneratedKeys="true">
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO sms_store_category (id, parent_id, name, ancestor, level, description, image, store_count, sale, sort, show_status, nav_status, remark, gmt_create, creator, gmt_modified, modifier, is_delete)
+        VALUES (
+            #{id,jdbcType=BIGINT},
+            #{parentId,jdbcType=BIGINT},
+            #{name,jdbcType=VARCHAR},
+            #{ancestor,jdbcType=VARCHAR},
+            #{level,jdbcType=TINYINT},
+            #{description,jdbcType=VARCHAR},
+            #{image,jdbcType=VARCHAR},
+            #{storeCount,jdbcType=INTEGER},
+            #{sale,jdbcType=INTEGER},
+            #{sort,jdbcType=INTEGER},
+            #{showStatus,jdbcType=TINYINT},
+            #{navStatus,jdbcType=TINYINT},
+            #{remark,jdbcType=VARCHAR},
+            #{gmtCreate,jdbcType=TIMESTAMP},
+            #{creator,jdbcType=VARCHAR},
+            #{gmtModified,jdbcType=TIMESTAMP},
+            #{modifier,jdbcType=VARCHAR},
+            #{isDelete,jdbcType=TINYINT}
+        )
+    </insert>
+
+    <select id="getSmsStoreCategoryById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM sms_store_category
+        WHERE id = #{id,jdbcType=BIGINT} 
+    </select>
+
+    <select id="getSmsStoreCategorys" parameterType="com.example.demo.entity.SmsStoreCategory" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM sms_store_category
+        <where>
+            <include refid="queryCondition"></include>
+        </where>
+    </select>
+    
+    <delete id="deleteSmsStoreCategorys" parameterType="java.util.List">
+        DELETE FROM sms_store_category
+        <where>
+         id IN
+            <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </where>
+    </delete>
+
+    <update id="updateSmsStoreCategory" parameterType="com.example.demo.entity.SmsStoreCategory">
+        UPDATE sms_store_category
+        <set>
+            <if test="parentId != null">parent_id = #{parentId,jdbcType=BIGINT},</if>
+            <if test="name != null">name = #{name,jdbcType=VARCHAR},</if>
+            <if test="ancestor != null">ancestor = #{ancestor,jdbcType=VARCHAR},</if>
+            <if test="level != null">level = #{level,jdbcType=TINYINT},</if>
+            <if test="description != null">description = #{description,jdbcType=VARCHAR},</if>
+            <if test="image != null">image = #{image,jdbcType=VARCHAR},</if>
+            <if test="storeCount != null">store_count = #{storeCount,jdbcType=INTEGER},</if>
+            <if test="sale != null">sale = #{sale,jdbcType=INTEGER},</if>
+            <if test="sort != null">sort = #{sort,jdbcType=INTEGER},</if>
+            <if test="showStatus != null">show_status = #{showStatus,jdbcType=TINYINT},</if>
+            <if test="navStatus != null">nav_status = #{navStatus,jdbcType=TINYINT},</if>
+            <if test="remark != null">remark = #{remark,jdbcType=VARCHAR},</if>
+            <if test="gmtCreate != null">gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},</if>
+            <if test="creator != null">creator = #{creator,jdbcType=VARCHAR},</if>
+            <if test="gmtModified != null">gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},</if>
+            <if test="modifier != null">modifier = #{modifier,jdbcType=VARCHAR},</if>
+            <if test="isDelete != null">is_delete = #{isDelete,jdbcType=TINYINT},</if>
+        </set>
+        WHERE id = #{id,jdbcType=BIGINT} 
+    </update>
+    
+    <select id="countSmsStoreCategory" parameterType="com.example.demo.entity.SmsStoreCategory" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM sms_store_category
+        <where>
+            <include refid="queryCondition"></include>
+        </where>
+    </select>
+</mapper>

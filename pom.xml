@@ -68,6 +68,7 @@
         <minio.version>8.4.5</minio.version>
         <amqp.version>2.3.9.RELEASE</amqp.version>
         <jackson.version>2.11.4</jackson.version>
+        <jackson-jsr-version>2.13.0</jackson-jsr-version>
         <demo-framework.version>0.0.1-SNAPSHOT</demo-framework.version>
         <demo-portal.version>0.0.1-SNAPSHOT</demo-portal.version>
         <demo-common.version>0.0.1-SNAPSHOT</demo-common.version>
@@ -263,6 +264,12 @@
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-xml</artifactId>
                 <version>${jackson.version}</version>
+            </dependency>
+            <!--  Jackson-JSR -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
+                <version>${jackson-jsr-version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

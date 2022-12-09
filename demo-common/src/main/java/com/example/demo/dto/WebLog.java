@@ -1,6 +1,7 @@
 package com.example.demo.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -10,6 +11,7 @@ import lombok.experimental.Accessors;
  * Created by YuanJW on 2022/9/21.
  */
 @Data
+@Builder
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor

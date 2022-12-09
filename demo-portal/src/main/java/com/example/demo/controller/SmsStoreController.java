@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.api.CommonResult;
 import com.example.demo.entity.SmsStore;
 import com.example.demo.service.SmsStoreService;
+import com.example.demo.utils.PageUtils;
 import com.example.demo.validator.groups.update;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,7 +25,7 @@ public class SmsStoreController {
 
     @ApiOperation(value = "获取商铺详情")
     @GetMapping(value = "/detail/{id}", produces = "application/json;charset=UTF-8")
-    public CommonResult detail(@PathVariable Long id) {
+    public CommonResult detail(@PathVariable Long id) throws InterruptedException {
         return CommonResult.success(smsStoreService.detail(id));
     }
 
@@ -33,5 +34,12 @@ public class SmsStoreController {
     public CommonResult update(@Validated(update.class) @RequestBody SmsStore smsStore) {
         smsStoreService.update(smsStore);
         return CommonResult.success("更新成功");
+    }
+
+    @ApiOperation(value = "获取商铺列表")
+    @GetMapping(value = "list", produces = "application/json;charset=UTF-8")
+    public CommonResult list(SmsStore smsStore) {
+        PageUtils.startPage();
+        return CommonResult.success(smsStoreService.list(smsStore));
     }
 }

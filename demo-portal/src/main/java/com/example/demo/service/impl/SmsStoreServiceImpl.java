@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,28 +34,39 @@ public class SmsStoreServiceImpl implements SmsStoreService {
     private SysFileService sysFileService;
     @Value("${redis.key.store}")
     private String REDIS_KEY_STORE;
+    @Value("${redis.lock.store}")
+    private String REDIS_LOCK_STORE;
     @Value("${redis.expire.common}")
     private Long REDIS_EXPIRE_COMMON;
     @Value("${redis.expire.pierce}")
     private Long REDIS_EXPIRE_PIERCE;
-    // 防止缓存穿透的空对象
-    private final static Map<String, Object> nullMap = Collections.singletonMap(RedisConstant.NULL_VALUE_KEY, null);
+    @Value("${redis.expire.lock}")
+    private Long REDIS_EXPIRE_LOCK;
 
     @Override
-    public SmsStore detail(Long id) {
+    public SmsStore detail(Long id) throws InterruptedException {
         // 从redis中获取商铺信息
         String key = REDIS_KEY_STORE + ":" + id;
         Map<Object, Object> value = redisService.hGetAll(key);
         SmsStore smsStore = null;
-        // 遇到空对象直接返回，防止缓存穿透
-        if (value.equals(nullMap)) {
-            return smsStore;
-        }
         if (MapUtil.isNotEmpty(value)) {
+            // 遇到空对象直接返回，防止缓存穿透
+            if (RedisConstant.NULL_MAP.equals(value)) {
+                return smsStore;
+            }
             // 缓存存在直接返回商铺信息
             smsStore = BeanUtil.fillBeanWithMap(value, new SmsStore(), false);
             return smsStore;
         }
+        // 获取互斥锁
+        String lockKey = REDIS_LOCK_STORE + ":" + id;
+        Boolean flag = redisService.tryLock(lockKey, "0", REDIS_EXPIRE_LOCK);
+        if (!flag) {
+            // 等待并重试
+            Thread.sleep(20);
+            detail(id);
+        }
+        // TODO : 获取锁成功后再次检测redis的缓存是否存在（double-check）
         // 从数据库中获取商铺信息
         smsStore = smsStoreMapper.getSmsStoreById(id);
         if (smsStore != null) {
@@ -69,8 +79,10 @@ public class SmsStoreServiceImpl implements SmsStoreService {
             redisService.hSetAll(key, map, REDIS_EXPIRE_COMMON);
         } else {
             // 缓存空对象避免缓存穿透
-            redisService.hSetAll(key, nullMap, REDIS_EXPIRE_PIERCE);
+            redisService.hSetAll(key, RedisConstant.NULL_MAP, REDIS_EXPIRE_PIERCE);
         }
+        // 释放互斥锁
+        redisService.del(lockKey);
         return smsStore;
     }
 
@@ -82,5 +94,11 @@ public class SmsStoreServiceImpl implements SmsStoreService {
         smsStoreMapper.updateById(smsStore);
         // 删除缓存
         redisService.del(key);
+    }
+
+    @Override
+    public List<SmsStore> list(SmsStore smsStore) {
+        // TODO : 整合ElasticSearch分布式搜索引擎
+        return smsStoreMapper.getSmsStores(smsStore);
     }
 }

@@ -276,4 +276,13 @@ public interface RedisService {
      * @return
      */
     Long lRemove(String key, long count, Object value);
+
+    /**
+     * setnx实现锁
+     * @param key
+     * @param value
+     * @param timeout
+     * @return
+     */
+    Boolean tryLock(String key, String value, long timeout);
 }
