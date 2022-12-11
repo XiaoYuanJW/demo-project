@@ -83,4 +83,14 @@ public class WebExceptionHandler {
         }
         return CommonResult.validateFailed(message);
     }
+
+    @ExceptionHandler(ServiceException.class)
+    public CommonResult handleServiceException(ServiceException e, HttpServletRequest request) {
+        // 获取请求入口
+        String requestURI = request.getRequestURI();
+        // 日志管理
+        log.error("请求地址：{}，异常：{}", requestURI, e.getMessage());
+        return CommonResult.failed(e.getMessage());
+    }
+
 }

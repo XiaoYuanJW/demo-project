@@ -10,6 +10,7 @@ import cn.hutool.core.util.URLUtil;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.example.demo.entity.SysFile;
 import com.example.demo.enums.CommonEnum;
+import com.example.demo.exception.ServiceException;
 import com.example.demo.mapper.SysFileMapper;
 import com.example.demo.service.SysFileService;
 import io.minio.*;
@@ -150,7 +151,7 @@ public class SysFileServiceImpl implements SysFileService {
     public void download(Long id, HttpServletResponse response) {
         SysFile sysFile = sysFileMapper.selectById(id);
         if (ObjectUtil.isNull(sysFile)) {
-            throw new RuntimeException("文件不存在");
+            throw new ServiceException("文件不存在");
         }
         try {
             MinioClient minioClient = MinioClient.builder()
@@ -172,7 +173,7 @@ public class SysFileServiceImpl implements SysFileService {
             IoUtil.write(response.getOutputStream(), true, fileBytes);
         } catch (Exception e) {
             log.info("文件下载失败：{}", e.getMessage());
-            throw new RuntimeException("文件下载失败");
+            throw new ServiceException("文件下载失败");
         }
     }
 
@@ -180,7 +181,7 @@ public class SysFileServiceImpl implements SysFileService {
     public void preview(Long id, HttpServletResponse response) {
         SysFile sysFile = sysFileMapper.selectById(id);
         if (ObjectUtil.isNull(sysFile)) {
-            throw new RuntimeException("文件不存在");
+            throw new ServiceException("文件不存在");
         }
         try {
             MinioClient minioClient = MinioClient.builder()
@@ -196,7 +197,7 @@ public class SysFileServiceImpl implements SysFileService {
             IoUtil.write(outputStream, true, fileBytes);
         } catch (Exception e) {
             log.info("文件下载失败：{}", e.getMessage());
-            throw new RuntimeException("文件下载失败");
+            throw new ServiceException("文件下载失败");
         }
     }
 
@@ -204,7 +205,7 @@ public class SysFileServiceImpl implements SysFileService {
     public void remove(Long id) {
         SysFile sysFile = sysFileMapper.selectById(id);
         if (ObjectUtil.isNull(sysFile)) {
-            throw new RuntimeException("文件不存在");
+            throw new ServiceException("文件不存在");
         }
         sysFileMapper.deleteById(id);
         try {
@@ -215,7 +216,7 @@ public class SysFileServiceImpl implements SysFileService {
             minioClient.removeObject(RemoveObjectArgs.builder().bucket(BUCKET_NAME).object(sysFile.getObjectName()).build());
         } catch (Exception e) {
             log.info("文件删除失败：{}", e.getMessage());
-            throw new RuntimeException("文件删除失败");
+            throw new ServiceException("文件删除失败");
         }
     }
 
@@ -227,7 +228,7 @@ public class SysFileServiceImpl implements SysFileService {
                                 .collect(Collectors.toList());
         List<SysFile> sysFiles = sysFileMapper.selectBatchIds(ids);
         if (CollUtil.isEmpty(sysFiles)) {
-            throw new RuntimeException("文件不存在");
+            throw new ServiceException("文件不存在");
         }
         sysFileMapper.deleteBatchIds(ids);
         MinioClient minioClient = null;
@@ -241,7 +242,7 @@ public class SysFileServiceImpl implements SysFileService {
                     minioClient.removeObject(RemoveObjectArgs.builder().bucket(BUCKET_NAME).object(sysFile.getObjectName()).build());
                 } catch (Exception e) {
                     log.info("文件删除失败：{}", e.getMessage());
-                    throw new RuntimeException("文件删除失败");
+                    throw new ServiceException("文件删除失败");
                 }
             }
         } catch (Exception e) {

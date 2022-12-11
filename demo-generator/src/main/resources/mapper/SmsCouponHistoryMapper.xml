@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.SmsCouponHistoryMapper">
+    <resultMap id="BaseResultMap" type="com.example.demo.entity.SmsCouponHistory">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="memberId" column="member_id" jdbcType="BIGINT"/>
+        <result property="couponId" column="coupon_id" jdbcType="BIGINT"/>
+        <result property="couponCode" column="coupon_code" jdbcType="VARCHAR"/>
+        <result property="getType" column="get_type" jdbcType="TINYINT"/>
+        <result property="payType" column="pay_type" jdbcType="TINYINT"/>
+        <result property="useStatus" column="use_status" jdbcType="TINYINT"/>
+        <result property="useTime" column="use_time" jdbcType="TIMESTAMP"/>
+        <result property="orderId" column="order_id" jdbcType="BIGINT"/>
+        <result property="orderSn" column="order_sn" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
+        <result property="creator" column="creator" jdbcType="VARCHAR"/>
+        <result property="gmtModified" column="gmt_modified" jdbcType="TIMESTAMP"/>
+        <result property="modifier" column="modifier" jdbcType="VARCHAR"/>
+        <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, member_id, coupon_id, coupon_code, get_type, pay_type, use_status, use_time, order_id, order_sn, remark, gmt_create, creator, gmt_modified, modifier, is_delete
+    </sql>
+
+    <sql id="queryCondition">
+        <if test="id != null">and id = #{id,jdbcType=BIGINT}</if>
+        <if test="memberId != null">and member_id = #{memberId,jdbcType=BIGINT}</if>
+        <if test="couponId != null">and coupon_id = #{couponId,jdbcType=BIGINT}</if>
+        <if test="couponCode != null">and coupon_code = #{couponCode,jdbcType=VARCHAR}</if>
+        <if test="getType != null">and get_type = #{getType,jdbcType=TINYINT}</if>
+        <if test="payType != null">and pay_type = #{payType,jdbcType=TINYINT}</if>
+        <if test="useStatus != null">and use_status = #{useStatus,jdbcType=TINYINT}</if>
+        <if test="useTime != null">and use_time = #{useTime,jdbcType=TIMESTAMP}</if>
+        <if test="orderId != null">and order_id = #{orderId,jdbcType=BIGINT}</if>
+        <if test="orderSn != null">and order_sn = #{orderSn,jdbcType=VARCHAR}</if>
+        <if test="remark != null">and remark = #{remark,jdbcType=VARCHAR}</if>
+        <if test="gmtCreate != null">and gmt_create = #{gmtCreate,jdbcType=TIMESTAMP}</if>
+        <if test="creator != null">and creator = #{creator,jdbcType=VARCHAR}</if>
+        <if test="gmtModified != null">and gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}</if>
+        <if test="modifier != null">and modifier = #{modifier,jdbcType=VARCHAR}</if>
+        <if test="isDelete != null">and is_delete = #{isDelete,jdbcType=TINYINT}</if>
+    </sql>
+
+    <insert id="saveSmsCouponHistory" keyColumn="id" keyProperty="id" parameterType="com.example.demo.entity.SmsCouponHistory" useGeneratedKeys="true">
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO sms_coupon_history (id, member_id, coupon_id, coupon_code, get_type, pay_type, use_status, use_time, order_id, order_sn, remark, gmt_create, creator, gmt_modified, modifier, is_delete)
+        VALUES (
+            #{id,jdbcType=BIGINT},
+            #{memberId,jdbcType=BIGINT},
+            #{couponId,jdbcType=BIGINT},
+            #{couponCode,jdbcType=VARCHAR},
+            #{getType,jdbcType=TINYINT},
+            #{payType,jdbcType=TINYINT},
+            #{useStatus,jdbcType=TINYINT},
+            #{useTime,jdbcType=TIMESTAMP},
+            #{orderId,jdbcType=BIGINT},
+            #{orderSn,jdbcType=VARCHAR},
+            #{remark,jdbcType=VARCHAR},
+            #{gmtCreate,jdbcType=TIMESTAMP},
+            #{creator,jdbcType=VARCHAR},
+            #{gmtModified,jdbcType=TIMESTAMP},
+            #{modifier,jdbcType=VARCHAR},
+            #{isDelete,jdbcType=TINYINT}
+        )
+    </insert>
+
+    <select id="getSmsCouponHistoryById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM sms_coupon_history
+        WHERE id = #{id,jdbcType=BIGINT} 
+    </select>
+
+    <select id="getSmsCouponHistorys" parameterType="com.example.demo.entity.SmsCouponHistory" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM sms_coupon_history
+        <where>
+            <include refid="queryCondition"></include>
+        </where>
+    </select>
+    
+    <delete id="deleteSmsCouponHistorys" parameterType="java.util.List">
+        DELETE FROM sms_coupon_history
+        <where>
+         id IN
+            <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </where>
+    </delete>
+
+    <update id="updateSmsCouponHistory" parameterType="com.example.demo.entity.SmsCouponHistory">
+        UPDATE sms_coupon_history
+        <set>
+            <if test="memberId != null">member_id = #{memberId,jdbcType=BIGINT},</if>
+            <if test="couponId != null">coupon_id = #{couponId,jdbcType=BIGINT},</if>
+            <if test="couponCode != null">coupon_code = #{couponCode,jdbcType=VARCHAR},</if>
+            <if test="getType != null">get_type = #{getType,jdbcType=TINYINT},</if>
+            <if test="payType != null">pay_type = #{payType,jdbcType=TINYINT},</if>
+            <if test="useStatus != null">use_status = #{useStatus,jdbcType=TINYINT},</if>
+            <if test="useTime != null">use_time = #{useTime,jdbcType=TIMESTAMP},</if>
+            <if test="orderId != null">order_id = #{orderId,jdbcType=BIGINT},</if>
+            <if test="orderSn != null">order_sn = #{orderSn,jdbcType=VARCHAR},</if>
+            <if test="remark != null">remark = #{remark,jdbcType=VARCHAR},</if>
+            <if test="gmtCreate != null">gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},</if>
+            <if test="creator != null">creator = #{creator,jdbcType=VARCHAR},</if>
+            <if test="gmtModified != null">gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},</if>
+            <if test="modifier != null">modifier = #{modifier,jdbcType=VARCHAR},</if>
+            <if test="isDelete != null">is_delete = #{isDelete,jdbcType=TINYINT},</if>
+        </set>
+        WHERE id = #{id,jdbcType=BIGINT} 
+    </update>
+    
+    <select id="countSmsCouponHistory" parameterType="com.example.demo.entity.SmsCouponHistory" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM sms_coupon_history
+        <where>
+            <include refid="queryCondition"></include>
+        </where>
+    </select>
+</mapper>

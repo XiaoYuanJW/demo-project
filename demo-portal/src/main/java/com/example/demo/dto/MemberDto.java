@@ -2,6 +2,7 @@ package com.example.demo.dto;
 
 import com.example.demo.desensitization.Sensitive;
 import com.example.demo.desensitization.SensitiveStrategy;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -18,6 +19,10 @@ import java.util.Map;
 @Accessors(chain = true)
 @ApiModel(value = "MemberDto", description = "用户返回信息")
 public class MemberDto {
+    @ApiModelProperty(value = "用户id")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Long id;
+
     @ApiModelProperty(value = "用户名")
     private String name;
 

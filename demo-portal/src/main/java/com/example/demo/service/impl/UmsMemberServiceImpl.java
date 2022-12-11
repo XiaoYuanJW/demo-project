@@ -11,6 +11,7 @@ import com.example.demo.dto.LoginParam;
 import com.example.demo.dto.MemberDto;
 import com.example.demo.entity.SysFile;
 import com.example.demo.entity.UmsMember;
+import com.example.demo.exception.ServiceException;
 import com.example.demo.mapper.UmsMemberMapper;
 import com.example.demo.service.SysFileService;
 import com.example.demo.service.UmsMemberCacheService;
@@ -43,7 +44,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     public String getAuthCode(String phone, HttpSession httpSession) {
         // 校验手机号
         if (!PhoneUtil.isPhone(phone)) {
-            throw new RuntimeException("手机号错误，请重新输入！");
+            throw new ServiceException("手机号错误，请重新输入！");
         }
         // 生成验证码
         String authCode = RandomUtil.randomNumbers(6);
@@ -60,7 +61,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     public String login(LoginParam loginParam, HttpSession httpSession) {
         // 校验手机号
 //        if (!PhoneUtil.isPhone(loginParam.getPhone())) {
-//            throw new RuntimeException("手机号错误，请重新输入！");
+//            throw new ServiceException("手机号错误，请重新输入！");
 //        }
         // 从session中获取验证码
 //        String authCode = (String) httpSession.getAttribute(UmsMemberConstant.Member.AUTH_CODE + loginParam.getPhone());
@@ -68,7 +69,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         String authCode = umsMemberCacheService.getAuthCode(loginParam.getPhone());
         // 校验验证码
         if (authCode == null || !authCode.equals(loginParam.getAuthCode())) {
-            throw new RuntimeException("验证码错误！");
+            throw new ServiceException("验证码错误！");
         }
         // 查询用户信息
         UmsMember umsMember = umsMemberMapper.selectOne(new LambdaQueryWrapper<UmsMember>()

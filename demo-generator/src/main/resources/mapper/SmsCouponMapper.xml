@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.SmsCouponMapper">
+    <resultMap id="BaseResultMap" type="com.example.demo.entity.SmsCoupon">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="storeId" column="store_id" jdbcType="BIGINT"/>
+        <result property="type" column="type" jdbcType="TINYINT"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="subTitle" column="sub_title" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="price" column="price" jdbcType="DECIMAL"/>
+        <result property="count" column="count" jdbcType="INTEGER"/>
+        <result property="amount" column="amount" jdbcType="DECIMAL"/>
+        <result property="perLimit" column="per_limit" jdbcType="INTEGER"/>
+        <result property="minPoint" column="min_point" jdbcType="DECIMAL"/>
+        <result property="useType" column="use_type" jdbcType="TINYINT"/>
+        <result property="useStartTime" column="use_start_time" jdbcType="TIMESTAMP"/>
+        <result property="useEndTime" column="use_end_time" jdbcType="TIMESTAMP"/>
+        <result property="receiveCount" column="receive_count" jdbcType="INTEGER"/>
+        <result property="surplusCount" column="surplus_count" jdbcType="INTEGER"/>
+        <result property="useCount" column="use_count" jdbcType="INTEGER"/>
+        <result property="receiveEndTime" column="receive_end_time" jdbcType="TIMESTAMP"/>
+        <result property="receiveStartTime" column="receive_start_time" jdbcType="TIMESTAMP"/>
+        <result property="code" column="code" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="TINYINT"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
+        <result property="creator" column="creator" jdbcType="VARCHAR"/>
+        <result property="gmtModified" column="gmt_modified" jdbcType="TIMESTAMP"/>
+        <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, store_id, type, title, sub_title, description, price, count, amount, per_limit, min_point, use_type, use_start_time, use_end_time, receive_count, surplus_count, use_count, receive_end_time, receive_start_time, code, status, remark, gmt_create, creator, gmt_modified, is_delete
+    </sql>
+
+    <sql id="queryCondition">
+        <if test="id != null">and id = #{id,jdbcType=BIGINT}</if>
+        <if test="storeId != null">and store_id = #{storeId,jdbcType=BIGINT}</if>
+        <if test="type != null">and type = #{type,jdbcType=TINYINT}</if>
+        <if test="title != null">and title = #{title,jdbcType=VARCHAR}</if>
+        <if test="subTitle != null">and sub_title = #{subTitle,jdbcType=VARCHAR}</if>
+        <if test="description != null">and description = #{description,jdbcType=VARCHAR}</if>
+        <if test="price != null">and price = #{price,jdbcType=DECIMAL}</if>
+        <if test="count != null">and count = #{count,jdbcType=INTEGER}</if>
+        <if test="amount != null">and amount = #{amount,jdbcType=DECIMAL}</if>
+        <if test="perLimit != null">and per_limit = #{perLimit,jdbcType=INTEGER}</if>
+        <if test="minPoint != null">and min_point = #{minPoint,jdbcType=DECIMAL}</if>
+        <if test="useType != null">and use_type = #{useType,jdbcType=TINYINT}</if>
+        <if test="useStartTime != null">and use_start_time = #{useStartTime,jdbcType=TIMESTAMP}</if>
+        <if test="useEndTime != null">and use_end_time = #{useEndTime,jdbcType=TIMESTAMP}</if>
+        <if test="receiveCount != null">and receive_count = #{receiveCount,jdbcType=INTEGER}</if>
+        <if test="surplusCount != null">and surplus_count = #{surplusCount,jdbcType=INTEGER}</if>
+        <if test="useCount != null">and use_count = #{useCount,jdbcType=INTEGER}</if>
+        <if test="receiveEndTime != null">and receive_end_time = #{receiveEndTime,jdbcType=TIMESTAMP}</if>
+        <if test="receiveStartTime != null">and receive_start_time = #{receiveStartTime,jdbcType=TIMESTAMP}</if>
+        <if test="code != null">and code = #{code,jdbcType=VARCHAR}</if>
+        <if test="status != null">and status = #{status,jdbcType=TINYINT}</if>
+        <if test="remark != null">and remark = #{remark,jdbcType=VARCHAR}</if>
+        <if test="gmtCreate != null">and gmt_create = #{gmtCreate,jdbcType=TIMESTAMP}</if>
+        <if test="creator != null">and creator = #{creator,jdbcType=VARCHAR}</if>
+        <if test="gmtModified != null">and gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}</if>
+        <if test="isDelete != null">and is_delete = #{isDelete,jdbcType=TINYINT}</if>
+    </sql>
+
+    <insert id="saveSmsCoupon" keyColumn="id" keyProperty="id" parameterType="com.example.demo.entity.SmsCoupon" useGeneratedKeys="true">
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO sms_coupon (id, store_id, type, title, sub_title, description, price, count, amount, per_limit, min_point, use_type, use_start_time, use_end_time, receive_count, surplus_count, use_count, receive_end_time, receive_start_time, code, status, remark, gmt_create, creator, gmt_modified, is_delete)
+        VALUES (
+            #{id,jdbcType=BIGINT},
+            #{storeId,jdbcType=BIGINT},
+            #{type,jdbcType=TINYINT},
+            #{title,jdbcType=VARCHAR},
+            #{subTitle,jdbcType=VARCHAR},
+            #{description,jdbcType=VARCHAR},
+            #{price,jdbcType=DECIMAL},
+            #{count,jdbcType=INTEGER},
+            #{amount,jdbcType=DECIMAL},
+            #{perLimit,jdbcType=INTEGER},
+            #{minPoint,jdbcType=DECIMAL},
+            #{useType,jdbcType=TINYINT},
+            #{useStartTime,jdbcType=TIMESTAMP},
+            #{useEndTime,jdbcType=TIMESTAMP},
+            #{receiveCount,jdbcType=INTEGER},
+            #{surplusCount,jdbcType=INTEGER},
+            #{useCount,jdbcType=INTEGER},
+            #{receiveEndTime,jdbcType=TIMESTAMP},
+            #{receiveStartTime,jdbcType=TIMESTAMP},
+            #{code,jdbcType=VARCHAR},
+            #{status,jdbcType=TINYINT},
+            #{remark,jdbcType=VARCHAR},
+            #{gmtCreate,jdbcType=TIMESTAMP},
+            #{creator,jdbcType=VARCHAR},
+            #{gmtModified,jdbcType=TIMESTAMP},
+            #{isDelete,jdbcType=TINYINT}
+        )
+    </insert>
+
+    <select id="getSmsCouponById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM sms_coupon
+        WHERE id = #{id,jdbcType=BIGINT} 
+    </select>
+
+    <select id="getSmsCoupons" parameterType="com.example.demo.entity.SmsCoupon" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM sms_coupon
+        <where>
+            <include refid="queryCondition"></include>
+        </where>
+    </select>
+    
+    <delete id="deleteSmsCoupons" parameterType="java.util.List">
+        DELETE FROM sms_coupon
+        <where>
+         id IN
+            <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </where>
+    </delete>
+
+    <update id="updateSmsCoupon" parameterType="com.example.demo.entity.SmsCoupon">
+        UPDATE sms_coupon
+        <set>
+            <if test="storeId != null">store_id = #{storeId,jdbcType=BIGINT},</if>
+            <if test="type != null">type = #{type,jdbcType=TINYINT},</if>
+            <if test="title != null">title = #{title,jdbcType=VARCHAR},</if>
+            <if test="subTitle != null">sub_title = #{subTitle,jdbcType=VARCHAR},</if>
+            <if test="description != null">description = #{description,jdbcType=VARCHAR},</if>
+            <if test="price != null">price = #{price,jdbcType=DECIMAL},</if>
+            <if test="count != null">count = #{count,jdbcType=INTEGER},</if>
+            <if test="amount != null">amount = #{amount,jdbcType=DECIMAL},</if>
+            <if test="perLimit != null">per_limit = #{perLimit,jdbcType=INTEGER},</if>
+            <if test="minPoint != null">min_point = #{minPoint,jdbcType=DECIMAL},</if>
+            <if test="useType != null">use_type = #{useType,jdbcType=TINYINT},</if>
+            <if test="useStartTime != null">use_start_time = #{useStartTime,jdbcType=TIMESTAMP},</if>
+            <if test="useEndTime != null">use_end_time = #{useEndTime,jdbcType=TIMESTAMP},</if>
+            <if test="receiveCount != null">receive_count = #{receiveCount,jdbcType=INTEGER},</if>
+            <if test="surplusCount != null">surplus_count = #{surplusCount,jdbcType=INTEGER},</if>
+            <if test="useCount != null">use_count = #{useCount,jdbcType=INTEGER},</if>
+            <if test="receiveEndTime != null">receive_end_time = #{receiveEndTime,jdbcType=TIMESTAMP},</if>
+            <if test="receiveStartTime != null">receive_start_time = #{receiveStartTime,jdbcType=TIMESTAMP},</if>
+            <if test="code != null">code = #{code,jdbcType=VARCHAR},</if>
+            <if test="status != null">status = #{status,jdbcType=TINYINT},</if>
+            <if test="remark != null">remark = #{remark,jdbcType=VARCHAR},</if>
+            <if test="gmtCreate != null">gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},</if>
+            <if test="creator != null">creator = #{creator,jdbcType=VARCHAR},</if>
+            <if test="gmtModified != null">gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},</if>
+            <if test="isDelete != null">is_delete = #{isDelete,jdbcType=TINYINT},</if>
+        </set>
+        WHERE id = #{id,jdbcType=BIGINT} 
+    </update>
+    
+    <select id="countSmsCoupon" parameterType="com.example.demo.entity.SmsCoupon" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM sms_coupon
+        <where>
+            <include refid="queryCondition"></include>
+        </where>
+    </select>
+</mapper>
