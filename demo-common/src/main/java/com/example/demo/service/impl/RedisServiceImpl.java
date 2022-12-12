@@ -1,6 +1,5 @@
 package com.example.demo.service.impl;
 
-import cn.hutool.core.util.BooleanUtil;
 import com.example.demo.service.RedisService;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -201,7 +200,6 @@ public class RedisServiceImpl implements RedisService {
 
     @Override
     public Boolean tryLock(String key, String value, long timeout) {
-        Boolean flag = redisTemplate.opsForValue().setIfAbsent(key, value, timeout, TimeUnit.SECONDS);
-        return BooleanUtil.isTrue(flag);
+        return redisTemplate.opsForValue().setIfAbsent(key, value, timeout, TimeUnit.SECONDS);
     }
 }

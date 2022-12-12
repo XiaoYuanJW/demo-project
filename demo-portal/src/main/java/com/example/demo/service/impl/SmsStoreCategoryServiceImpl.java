@@ -114,7 +114,6 @@ public class SmsStoreCategoryServiceImpl implements SmsStoreCategoryService {
         redisService.del(key);
     }
 
-
     @Override
     public List<SmsStoreCategory> list(SmsStoreCategory smsStoreCategory) {
         return smsStoreCategoryMapper.getSmsStoreCategorys(smsStoreCategory);

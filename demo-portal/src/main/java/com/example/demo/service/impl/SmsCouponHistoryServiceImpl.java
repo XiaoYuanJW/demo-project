@@ -7,6 +7,7 @@ import com.example.demo.entity.SmsCouponHistory;
 import com.example.demo.exception.ServiceException;
 import com.example.demo.mapper.SmsCouponHistoryMapper;
 import com.example.demo.mapper.SmsCouponMapper;
+import com.example.demo.service.RedisLockService;
 import com.example.demo.service.SmsCouponHistoryService;
 import com.example.demo.util.MemberHolder;
 import com.example.demo.utils.IdGeneratorUtils;
@@ -29,9 +30,13 @@ public class SmsCouponHistoryServiceImpl implements SmsCouponHistoryService {
     @Resource
     private IdGeneratorUtils idGeneratorUtils;
     @Resource
+    private RedisLockService redisLockService;
+    @Resource
     private TransactionTemplate transactionTemplate;
     @Value("${redis.key.couponHistory}")
     private String REDIS_KEY_COUPON_HISTORY;
+    @Value("${redis.lock.couponHistory}")
+    private String REDIS_LOCK_COUPON_HISTORY;
 
     @Override
     public int insert(SmsCouponHistory smsCouponHistory) {
@@ -57,8 +62,11 @@ public class SmsCouponHistoryServiceImpl implements SmsCouponHistoryService {
             throw new ServiceException("该优惠券已被抢光！");
         }
         Long memberId = MemberHolder.get().getId();
-        // 添加悲观锁
-        synchronized (MemberHolder.get().getId()) {
+        // 获取分布式锁
+        if (!redisLockService.tryLock(REDIS_LOCK_COUPON_HISTORY, 1000)) {
+            throw new ServiceException("一人只允许购买一张优惠券");
+        }
+        try {
             // 校验用户是否已经领取过
             Integer receive = smsCouponHistoryMapper.selectCount(new LambdaQueryWrapper<SmsCouponHistory>()
                     .eq(SmsCouponHistory::getMemberId, memberId)
@@ -84,6 +92,8 @@ public class SmsCouponHistoryServiceImpl implements SmsCouponHistoryService {
                         .build();
                 return smsCouponHistoryMapper.insert(smsCouponHistory);
             });
+        } finally {
+            redisLockService.unlock(REDIS_LOCK_COUPON_HISTORY);
         }
     }
 }
