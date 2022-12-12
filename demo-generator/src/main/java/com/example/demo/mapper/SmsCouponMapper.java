@@ -48,4 +48,9 @@ public interface SmsCouponMapper extends BaseMapper<SmsCoupon> {
     * @return
     */
     int countSmsCoupon(SmsCoupon smsCoupon);
+    /**
+     * 更新库存
+     * @return
+     */
+    int reduce(Long id);
 }

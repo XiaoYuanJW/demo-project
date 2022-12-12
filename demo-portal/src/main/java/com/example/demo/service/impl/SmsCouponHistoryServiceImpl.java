@@ -1,6 +1,7 @@
 package com.example.demo.service.impl;
 
 import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.demo.entity.SmsCoupon;
 import com.example.demo.entity.SmsCouponHistory;
 import com.example.demo.exception.ServiceException;
@@ -11,8 +12,7 @@ import com.example.demo.util.MemberHolder;
 import com.example.demo.utils.IdGeneratorUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 
@@ -28,6 +28,8 @@ public class SmsCouponHistoryServiceImpl implements SmsCouponHistoryService {
     private SmsCouponMapper smsCouponMapper;
     @Resource
     private IdGeneratorUtils idGeneratorUtils;
+    @Resource
+    private TransactionTemplate transactionTemplate;
     @Value("${redis.key.couponHistory}")
     private String REDIS_KEY_COUPON_HISTORY;
 
@@ -37,7 +39,6 @@ public class SmsCouponHistoryServiceImpl implements SmsCouponHistoryService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int purchase(Long id) {
         // 根据id查询优惠券详情
         SmsCoupon smsCoupon = smsCouponMapper.selectById(id);
@@ -55,18 +56,34 @@ public class SmsCouponHistoryServiceImpl implements SmsCouponHistoryService {
         if (smsCoupon.getSurplusCount() < 1) {
             throw new ServiceException("该优惠券已被抢光！");
         }
-        // 增加领取数量削减库存
-        smsCouponMapper.updateById(smsCoupon.setSurplusCount(smsCoupon.getSurplusCount() - 1)
-                .setReceiveCount(smsCoupon.getReceiveCount() + 1));
-        // 新增优惠券订单记录
-        SmsCouponHistory smsCouponHistory = SmsCouponHistory.builder()
-                .id(idGeneratorUtils.generateId(REDIS_KEY_COUPON_HISTORY))
-                .memberId(MemberHolder.get().getId())
-                .couponId(id)
-                .couponCode(smsCoupon.getCode())
-                .getType(2)
-                .payType(0)
-                .build();
-        return smsCouponHistoryMapper.insert(smsCouponHistory);
+        Long memberId = MemberHolder.get().getId();
+        // 添加悲观锁
+        synchronized (MemberHolder.get().getId()) {
+            // 校验用户是否已经领取过
+            Integer receive = smsCouponHistoryMapper.selectCount(new LambdaQueryWrapper<SmsCouponHistory>()
+                    .eq(SmsCouponHistory::getMemberId, memberId)
+                    .eq(SmsCouponHistory::getCouponId, id));
+            if (receive > 0) {
+                throw new ServiceException("您已经领取过该优惠券！");
+            }
+            // 添加事务
+            return transactionTemplate.execute(status -> {
+                // 增加领取数量削减库存
+                int count = smsCouponMapper.reduce(id);
+                if (count <= 0) {
+                    throw new ServiceException("该优惠券存量不足！");
+                }
+                // 新增优惠券订单记录
+                SmsCouponHistory smsCouponHistory = SmsCouponHistory.builder()
+                        .id(idGeneratorUtils.generateId(REDIS_KEY_COUPON_HISTORY))
+                        .memberId(memberId)
+                        .couponId(id)
+                        .couponCode(smsCoupon.getCode())
+                        .getType(2)
+                        .payType(0)
+                        .build();
+                return smsCouponHistoryMapper.insert(smsCouponHistory);
+            });
+        }
     }
 }

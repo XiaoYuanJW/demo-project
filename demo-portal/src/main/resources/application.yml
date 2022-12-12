@@ -6,6 +6,8 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  jackson:
+    default-property-inclusion: non_null # JSON处理时忽略非空字段
 
 mybatis:
   mapper-locations:

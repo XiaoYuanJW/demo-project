@@ -157,11 +157,16 @@
         </set>
         WHERE id = #{id,jdbcType=BIGINT} 
     </update>
-    
+
     <select id="countSmsCoupon" parameterType="com.example.demo.entity.SmsCoupon" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM sms_coupon
         <where>
             <include refid="queryCondition"></include>
         </where>
     </select>
+
+    <update id="reduce">
+        UPDATE sms_coupon SET receive_count = receive_count + 1, surplus_count = surplus_count - 1
+        WHERE id = ${id} AND surplus_count > 0
+    </update>
 </mapper>
