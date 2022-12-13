@@ -18,5 +18,5 @@ public interface RedisLockService {
      * @param key
      * @return
      */
-    Boolean unlock(String key);
+    void unlock(String key);
 }

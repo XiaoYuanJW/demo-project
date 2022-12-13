@@ -6,6 +6,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -20,16 +21,23 @@ public class RedisLockServiceImpl implements RedisLockService {
 
     private static final String KEY_PREFIX = "lock:";
 
+    private static final String VALUE_PREFIX = UUID.randomUUID().toString() + "-";
+
     @Override
     public Boolean tryLock(String key, long timeout) {
         // 获取线程标识
         long threadId = Thread.currentThread().getId();
         return redisTemplate.opsForValue()
-                .setIfAbsent(KEY_PREFIX + key, String.valueOf(threadId), timeout, TimeUnit.SECONDS);
+                .setIfAbsent(KEY_PREFIX + key, VALUE_PREFIX + threadId, timeout, TimeUnit.SECONDS);
     }
 
     @Override
-    public Boolean unlock(String key) {
-        return redisTemplate.delete(KEY_PREFIX + key);
+    public void unlock(String key) {
+        // 获取线程标识
+        String value = VALUE_PREFIX + Thread.currentThread().getId();
+        // 校验线程和锁的标识是否一致
+        if (value.equals(redisTemplate.opsForValue().get(KEY_PREFIX + key))) {
+            redisTemplate.delete(KEY_PREFIX + key);
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.demo.service.impl;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.BooleanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.demo.entity.SmsCoupon;
 import com.example.demo.entity.SmsCouponHistory;
@@ -37,6 +38,8 @@ public class SmsCouponHistoryServiceImpl implements SmsCouponHistoryService {
     private String REDIS_KEY_COUPON_HISTORY;
     @Value("${redis.lock.couponHistory}")
     private String REDIS_LOCK_COUPON_HISTORY;
+    @Value("${redis.expire.lock}")
+    private Long REDIS_EXPIRE_LOCK;
 
     @Override
     public int insert(SmsCouponHistory smsCouponHistory) {
@@ -63,7 +66,7 @@ public class SmsCouponHistoryServiceImpl implements SmsCouponHistoryService {
         }
         Long memberId = MemberHolder.get().getId();
         // 获取分布式锁
-        if (!redisLockService.tryLock(REDIS_LOCK_COUPON_HISTORY, 1000)) {
+        if (BooleanUtil.isFalse(redisLockService.tryLock(REDIS_LOCK_COUPON_HISTORY, REDIS_EXPIRE_LOCK))) {
             throw new ServiceException("一人只允许购买一张优惠券");
         }
         try {
