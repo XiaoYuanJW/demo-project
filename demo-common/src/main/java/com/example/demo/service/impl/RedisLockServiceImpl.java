@@ -2,10 +2,13 @@ package com.example.demo.service.impl;
 
 import com.example.demo.service.RedisLockService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -23,6 +26,18 @@ public class RedisLockServiceImpl implements RedisLockService {
 
     private static final String VALUE_PREFIX = UUID.randomUUID().toString() + "-";
 
+    private static final DefaultRedisScript<Long> UNLOCK_SCRIPT;
+
+    // 静态代码块提前加载lua脚本，减少每次方法执行的io消耗
+    static {
+        UNLOCK_SCRIPT = new DefaultRedisScript<Long>();
+        // 设置文件位置
+        UNLOCK_SCRIPT.setLocation(new ClassPathResource("/lua/unlock.lua"));
+        // 设置返回值类型
+        UNLOCK_SCRIPT.setResultType(Long.class);
+
+    }
+
     @Override
     public Boolean tryLock(String key, long timeout) {
         // 获取线程标识
@@ -39,5 +54,13 @@ public class RedisLockServiceImpl implements RedisLockService {
         if (value.equals(redisTemplate.opsForValue().get(KEY_PREFIX + key))) {
             redisTemplate.delete(KEY_PREFIX + key);
         }
+    }
+
+    @Override
+    public void unlockByLua(String key) {
+        // 获取线程标识
+        String value = VALUE_PREFIX + Thread.currentThread().getId();
+        // 执行lua脚本
+        redisTemplate.execute(UNLOCK_SCRIPT, Collections.singletonList(KEY_PREFIX + key), value);
     }
 }

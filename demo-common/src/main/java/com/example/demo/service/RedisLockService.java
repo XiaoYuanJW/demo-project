@@ -19,4 +19,10 @@ public interface RedisLockService {
      * @return
      */
     void unlock(String key);
+
+    /**
+     * 通过lua脚本释放锁
+     * @param key
+     */
+    void unlockByLua(String key);
 }

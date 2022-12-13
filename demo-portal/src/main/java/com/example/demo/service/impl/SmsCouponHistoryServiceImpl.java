@@ -96,7 +96,8 @@ public class SmsCouponHistoryServiceImpl implements SmsCouponHistoryService {
                 return smsCouponHistoryMapper.insert(smsCouponHistory);
             });
         } finally {
-            redisLockService.unlock(REDIS_LOCK_COUPON_HISTORY);
+            // 通过lua脚本释放锁解决原子性问题
+            redisLockService.unlockByLua(REDIS_LOCK_COUPON_HISTORY);
         }
     }
 }
