@@ -1,7 +1,6 @@
 package com.example.demo.service.impl;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.BooleanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.demo.entity.SmsCoupon;
 import com.example.demo.entity.SmsCouponHistory;
@@ -12,6 +11,8 @@ import com.example.demo.service.RedisLockService;
 import com.example.demo.service.SmsCouponHistoryService;
 import com.example.demo.util.MemberHolder;
 import com.example.demo.utils.IdGeneratorUtils;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -32,6 +33,8 @@ public class SmsCouponHistoryServiceImpl implements SmsCouponHistoryService {
     private IdGeneratorUtils idGeneratorUtils;
     @Resource
     private RedisLockService redisLockService;
+    @Resource
+    private RedissonClient redissonClient;
     @Resource
     private TransactionTemplate transactionTemplate;
     @Value("${redis.key.couponHistory}")
@@ -66,7 +69,12 @@ public class SmsCouponHistoryServiceImpl implements SmsCouponHistoryService {
         }
         Long memberId = MemberHolder.get().getId();
         // 获取分布式锁
-        if (BooleanUtil.isFalse(redisLockService.tryLock(REDIS_LOCK_COUPON_HISTORY, REDIS_EXPIRE_LOCK))) {
+//        Boolean isLock = redisLockService.tryLock(REDIS_LOCK_COUPON_HISTORY, REDIS_EXPIRE_LOCK);
+        // 通过Redisson获取可重入锁
+        RLock lock = redisLockService.getRLock(REDIS_LOCK_COUPON_HISTORY);
+        // 尝试获取可重入锁
+        boolean isLock = lock.tryLock();
+        if (!isLock) {
             throw new ServiceException("一人只允许购买一张优惠券");
         }
         try {
@@ -97,7 +105,9 @@ public class SmsCouponHistoryServiceImpl implements SmsCouponHistoryService {
             });
         } finally {
             // 通过lua脚本释放锁解决原子性问题
-            redisLockService.unlockByLua(REDIS_LOCK_COUPON_HISTORY);
+//            redisLockService.unlockByLua(REDIS_LOCK_COUPON_HISTORY);
+            // 释放可重入锁
+            lock.unlock();
         }
     }
 }

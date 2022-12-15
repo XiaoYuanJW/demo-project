@@ -1,7 +1,10 @@
 package com.example.demo.service.impl;
 
+import cn.hutool.core.util.BooleanUtil;
 import com.example.demo.service.RedisLockService;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -21,6 +24,8 @@ import java.util.concurrent.TimeUnit;
 public class RedisLockServiceImpl implements RedisLockService {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
+    @Resource
+    private RedissonClient redissonClient;
 
     private static final String KEY_PREFIX = "lock:";
 
@@ -39,11 +44,12 @@ public class RedisLockServiceImpl implements RedisLockService {
     }
 
     @Override
-    public Boolean tryLock(String key, long timeout) {
+    public boolean tryLock(String key, long timeout) {
         // 获取线程标识
         long threadId = Thread.currentThread().getId();
-        return redisTemplate.opsForValue()
+        Boolean isLock = redisTemplate.opsForValue()
                 .setIfAbsent(KEY_PREFIX + key, VALUE_PREFIX + threadId, timeout, TimeUnit.SECONDS);
+        return BooleanUtil.isFalse(isLock);
     }
 
     @Override
@@ -62,5 +68,10 @@ public class RedisLockServiceImpl implements RedisLockService {
         String value = VALUE_PREFIX + Thread.currentThread().getId();
         // 执行lua脚本
         redisTemplate.execute(UNLOCK_SCRIPT, Collections.singletonList(KEY_PREFIX + key), value);
+    }
+
+    @Override
+    public RLock getRLock(String key) {
+        return redissonClient.getLock(KEY_PREFIX + key);
     }
 }

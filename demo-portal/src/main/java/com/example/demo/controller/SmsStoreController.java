@@ -37,7 +37,7 @@ public class SmsStoreController {
     }
 
     @ApiOperation(value = "获取商铺列表")
-    @GetMapping(value = "list", produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/list", produces = "application/json;charset=UTF-8")
     public CommonResult list(SmsStore smsStore) {
         PageUtils.startPage();
         return CommonResult.success(smsStoreService.list(smsStore));
