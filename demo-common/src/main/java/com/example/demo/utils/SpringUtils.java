@@ -37,8 +37,8 @@ public class SpringUtils implements ApplicationContextAware {
      * @param name
      * @return
      */
-    public static Object getBean(String name) {
-        return getApplicationContext().getBean(name);
+    public static <T> T getBean(String name) {
+        return (T) getApplicationContext().getBean(name);
     }
 
     /**
@@ -46,8 +46,8 @@ public class SpringUtils implements ApplicationContextAware {
      * @param clazz
      * @return
      */
-    public static Object getBean(Class clazz) {
-        return getApplicationContext().getBean(clazz);
+    public static <T> T getBean(Class clazz) {
+        return (T) getApplicationContext().getBean(clazz);
     }
 
     /**
@@ -56,7 +56,7 @@ public class SpringUtils implements ApplicationContextAware {
      * @param clazz
      * @return
      */
-    public static Object getBean(String name, Class clazz) {
-        return getApplicationContext().getBean(name, clazz);
+    public static <T> T getBean(String name, Class clazz) {
+        return (T) getApplicationContext().getBean(name, clazz);
     }
 }

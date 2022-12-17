@@ -36,7 +36,7 @@ public class SmsStoreCategoryServiceImpl implements SmsStoreCategoryService {
     @Resource
     private SysFileService sysFileService;
     @Resource
-    private Executor asyncExecutor;
+    private Executor threadPoolTaskExecutor;
     @Value("${redis.key.storeCategory}")
     private String REDIS_KEY_STORE_CATEGORY;
     @Value("${redis.lock.storeCategory}")
@@ -71,7 +71,7 @@ public class SmsStoreCategoryServiceImpl implements SmsStoreCategoryService {
             // 获取互斥锁
             Boolean flag = redisService.tryLock(lockKey, "0", REDIS_EXPIRE_LOCK);
             if (flag) {
-                asyncExecutor.execute(() -> {
+                threadPoolTaskExecutor.execute(() -> {
                     // 重建缓存
                     SmsStoreCategory category = smsStoreCategoryMapper.selectById(id);
                     if (category != null) {

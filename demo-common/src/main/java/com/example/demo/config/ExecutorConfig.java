@@ -27,8 +27,8 @@ public class ExecutorConfig {
     @Value("${async.executor.thread.name.prefix}")
     private String namePrefix;
 
-    @Bean(value = "asyncExecutor")
-    public Executor asyncExecutor() {
+    @Bean(value = "threadPoolTaskExecutor")
+    public Executor threadPoolTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(corePoolSize);
         executor.setMaxPoolSize(maxPoolSize);

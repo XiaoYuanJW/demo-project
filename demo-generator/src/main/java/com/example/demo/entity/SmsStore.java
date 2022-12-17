@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.example.demo.validator.groups.insert;
 import com.example.demo.validator.groups.update;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -40,13 +41,13 @@ public class SmsStore extends BaseEntity{
     @ApiModelProperty(value = "商铺id")
     private Long id;
     
-    @NotBlank(message="[商铺名称]不能为空")
+    @NotBlank(message="[商铺名称]不能为空", groups = {insert.class})
     @Size(max= 128,message="编码长度不能超过128")
     @Length(max= 128,message="编码长度不能超过128")
     @ApiModelProperty(value = "商铺名称")
     private String name;
     
-    @NotBlank(message="[商铺电话]不能为空")
+    @NotBlank(message="[商铺电话]不能为空", groups = {insert.class})
     @Size(max= 20,message="编码长度不能超过20")
     @Length(max= 20,message="编码长度不能超过20")
     @ApiModelProperty(value = "商铺电话")

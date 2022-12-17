@@ -20,5 +20,12 @@ public interface SmsCouponHistoryService {
      * @param id
      * @return
      */
-    int purchase(Long id);
+    long purchase(Long id);
+
+    /**
+     * 异步购买优惠券
+     * @param id
+     * @return
+     */
+    long asyncPurchase(Long id);
 }

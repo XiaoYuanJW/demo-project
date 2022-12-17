@@ -278,7 +278,7 @@ public interface RedisService {
     Long lRemove(String key, long count, Object value);
 
     /**
-     * setnx实现锁
+     * 通过SETNX实现锁
      * @param key
      * @param value
      * @param timeout

@@ -40,7 +40,6 @@ public class RedisLockServiceImpl implements RedisLockService {
         UNLOCK_SCRIPT.setLocation(new ClassPathResource("/lua/unlock.lua"));
         // 设置返回值类型
         UNLOCK_SCRIPT.setResultType(Long.class);
-
     }
 
     @Override

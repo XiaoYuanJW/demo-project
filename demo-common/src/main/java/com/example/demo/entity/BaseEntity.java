@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
@@ -56,6 +57,7 @@ public class BaseEntity implements Serializable {
     private String modifier;
 
     @ApiModelProperty(value = "注销标识字段： 0->正常；null->已注销")
+    @TableLogic(value = "0",delval = "1")
     private Integer isDelete;
 
     @TableField(exist = false)

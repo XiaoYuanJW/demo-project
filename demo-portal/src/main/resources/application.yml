@@ -55,6 +55,7 @@ redis:
     store: "sms:lock:store" # 商铺信息锁
     storeCategory: "sms:lock:store:category" # 商铺种类锁
     couponHistory: "coupon:history" # 商铺优惠券历史锁
+    couponStock: "coupon:stock" # 商铺优惠券库存数量
   expire:
     authCode: 120 # 验证码超期时间
     common: 86400 # 24小时
