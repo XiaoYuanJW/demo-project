@@ -105,4 +105,7 @@ public class SmsReviewDetail extends BaseEntity {
 
     @ApiModelProperty(value = "商铺信息")
     private SmsStore smsStore;
+
+    @ApiModelProperty(value = "当前用户的点赞状态")
+    private Boolean isLike;
 }

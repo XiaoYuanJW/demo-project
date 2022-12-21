@@ -92,7 +92,7 @@
     <select id="getSmsReviews" parameterType="com.example.demo.entity.SmsReview" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List" />
-        FROM SmsReview
+        FROM sms_review
         <where>
             <include refid="queryCondition"></include>
         </where>

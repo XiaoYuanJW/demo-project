@@ -44,6 +44,6 @@ public class TokenInterceptor implements HandlerInterceptor {
                 return true;
             }
         }
-        return true;
+        return false;
     }
 }

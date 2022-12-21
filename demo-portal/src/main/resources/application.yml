@@ -51,6 +51,7 @@ redis:
     store: "sms:store" # 商铺信息
     storeCategory: "sms:store:category" # 商铺种类
     couponHistory: "sms:coupon:history" # 优惠券历史记录
+    reviewLike: "sms:review:like" # 商铺点评点赞信息
   lock:
     store: "sms:lock:store" # 商铺信息锁
     storeCategory: "sms:lock:store:category" # 商铺种类锁

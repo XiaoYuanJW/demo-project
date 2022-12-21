@@ -178,7 +178,7 @@ public interface RedisService {
      * @param time
      * @return
      */
-    Long sAdd(String key, long time, Object... values);
+    Long sAddForTime(String key, long time, Object... values);
 
     /**
      * 获取Set结构

@@ -201,7 +201,7 @@ public class SmsCouponHistoryServiceImpl implements SmsCouponHistoryService {
             throw new ServiceException("用户不能重复下单");
         }
         long historyId = idGeneratorUtils.generateId(REDIS_KEY_COUPON_HISTORY);
-        // 将订单信息添加到阻塞队列中执行
+        // 将订单信息添加到阻塞队列中执行 TODO: RabbitMq的异步操作
         SmsCouponHistory smsCouponHistory = SmsCouponHistory.builder()
                 .id(idGeneratorUtils.generateId(REDIS_KEY_COUPON_HISTORY))
                 .memberId(memberId)

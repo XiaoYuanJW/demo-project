@@ -74,7 +74,7 @@
     <select id="getSmsReviewComments" parameterType="com.example.demo.entity.SmsReviewComment" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List" />
-        FROM SmsReviewComment
+        FROM sms_review_comment
         <where>
             <include refid="queryCondition"></include>
         </where>
