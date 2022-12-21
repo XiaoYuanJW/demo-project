@@ -1,7 +1,6 @@
 package com.example.demo.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.example.demo.validator.groups.insert;
@@ -111,7 +110,4 @@ public class SmsStore extends BaseEntity{
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "每日营业结束时间")
     private Date businessEndTime;
-
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
 }

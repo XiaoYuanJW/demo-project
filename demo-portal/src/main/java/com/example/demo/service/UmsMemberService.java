@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.LoginParam;
 import com.example.demo.dto.MemberDto;
+import com.example.demo.entity.UmsMember;
 
 import javax.servlet.http.HttpSession;
 
@@ -31,4 +32,11 @@ public interface UmsMemberService {
      * @return
      */
     MemberDto info();
+
+    /**
+     * 查询用户信息详情
+     * @param id
+     * @return
+     */
+    UmsMember detail(Long id);
 }

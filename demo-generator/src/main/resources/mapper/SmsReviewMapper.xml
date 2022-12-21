@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.SmsReviewMapper">
+    <resultMap id="BaseResultMap" type="com.example.demo.entity.SmsReview">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="storeId" column="store_id" jdbcType="BIGINT"/>
+        <result property="memberId" column="member_id" jdbcType="BIGINT"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="synopsis" column="synopsis" jdbcType="VARCHAR"/>
+        <result property="context" column="context" jdbcType="VARCHAR"/>
+        <result property="pic" column="pic" jdbcType="VARCHAR"/>
+        <result property="likes" column="likes" jdbcType="INTEGER"/>
+        <result property="views" column="views" jdbcType="INTEGER"/>
+        <result property="comments" column="comments" jdbcType="INTEGER"/>
+        <result property="reports" column="reports" jdbcType="INTEGER"/>
+        <result property="sort" column="sort" jdbcType="INTEGER"/>
+        <result property="recommandStatus" column="recommand_status" jdbcType="INTEGER"/>
+        <result property="verifyStatus" column="verify_status" jdbcType="INTEGER"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
+        <result property="creator" column="creator" jdbcType="VARCHAR"/>
+        <result property="gmtModified" column="gmt_modified" jdbcType="TIMESTAMP"/>
+        <result property="modifier" column="modifier" jdbcType="VARCHAR"/>
+        <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, store_id, member_id, title, synopsis, context, pic, likes, views, comments, reports, sort, recommand_status, verify_status, remark, gmt_create, creator, gmt_modified, modifier, is_delete
+    </sql>
+
+    <sql id="queryCondition">
+        <if test="id != null">and id = #{id,jdbcType=BIGINT}</if>
+        <if test="storeId != null">and store_id = #{storeId,jdbcType=BIGINT}</if>
+        <if test="memberId != null">and member_id = #{memberId,jdbcType=BIGINT}</if>
+        <if test="title != null">and title = #{title,jdbcType=VARCHAR}</if>
+        <if test="synopsis != null">and synopsis = #{synopsis,jdbcType=VARCHAR}</if>
+        <if test="context != null">and context = #{context,jdbcType=VARCHAR}</if>
+        <if test="pic != null">and pic = #{pic,jdbcType=VARCHAR}</if>
+        <if test="likes != null">and likes = #{likes,jdbcType=INTEGER}</if>
+        <if test="views != null">and views = #{views,jdbcType=INTEGER}</if>
+        <if test="comments != null">and comments = #{comments,jdbcType=INTEGER}</if>
+        <if test="reports != null">and reports = #{reports,jdbcType=INTEGER}</if>
+        <if test="sort != null">and sort = #{sort,jdbcType=INTEGER}</if>
+        <if test="recommandStatus != null">and recommand_status = #{recommandStatus,jdbcType=INTEGER}</if>
+        <if test="verifyStatus != null">and verify_status = #{verifyStatus,jdbcType=INTEGER}</if>
+        <if test="remark != null">and remark = #{remark,jdbcType=VARCHAR}</if>
+        <if test="gmtCreate != null">and gmt_create = #{gmtCreate,jdbcType=TIMESTAMP}</if>
+        <if test="creator != null">and creator = #{creator,jdbcType=VARCHAR}</if>
+        <if test="gmtModified != null">and gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}</if>
+        <if test="modifier != null">and modifier = #{modifier,jdbcType=VARCHAR}</if>
+        <if test="isDelete != null">and is_delete = #{isDelete,jdbcType=TINYINT}</if>
+    </sql>
+
+    <insert id="saveSmsReview" keyColumn="id" keyProperty="id" parameterType="com.example.demo.entity.SmsReview" useGeneratedKeys="true">
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO sms_review (id, store_id, member_id, title, synopsis, context, pic, likes, views, comments, reports, sort, recommand_status, verify_status, remark, gmt_create, creator, gmt_modified, modifier, is_delete)
+        VALUES (
+            #{id,jdbcType=BIGINT},
+            #{storeId,jdbcType=BIGINT},
+            #{memberId,jdbcType=BIGINT},
+            #{title,jdbcType=VARCHAR},
+            #{synopsis,jdbcType=VARCHAR},
+            #{context,jdbcType=VARCHAR},
+            #{pic,jdbcType=VARCHAR},
+            #{likes,jdbcType=INTEGER},
+            #{views,jdbcType=INTEGER},
+            #{comments,jdbcType=INTEGER},
+            #{reports,jdbcType=INTEGER},
+            #{sort,jdbcType=INTEGER},
+            #{recommandStatus,jdbcType=INTEGER},
+            #{verifyStatus,jdbcType=INTEGER},
+            #{remark,jdbcType=VARCHAR},
+            #{gmtCreate,jdbcType=TIMESTAMP},
+            #{creator,jdbcType=VARCHAR},
+            #{gmtModified,jdbcType=TIMESTAMP},
+            #{modifier,jdbcType=VARCHAR},
+            #{isDelete,jdbcType=TINYINT}
+        )
+    </insert>
+
+    <select id="getSmsReviewById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM sms_review
+        WHERE id = #{id,jdbcType=BIGINT} 
+    </select>
+
+    <select id="getSmsReviews" parameterType="com.example.demo.entity.SmsReview" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM SmsReview
+        <where>
+            <include refid="queryCondition"></include>
+        </where>
+    </select>
+    
+    <delete id="deleteSmsReviews" parameterType="java.util.List">
+        DELETE FROM sms_review
+        <where>
+         id IN
+            <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </where>
+    </delete>
+
+    <update id="updateSmsReview" parameterType="com.example.demo.entity.SmsReview">
+        UPDATE sms_review
+        <set>
+            <if test="storeId != null">store_id = #{storeId,jdbcType=BIGINT},</if>
+            <if test="memberId != null">member_id = #{memberId,jdbcType=BIGINT},</if>
+            <if test="title != null">title = #{title,jdbcType=VARCHAR},</if>
+            <if test="synopsis != null">synopsis = #{synopsis,jdbcType=VARCHAR},</if>
+            <if test="context != null">context = #{context,jdbcType=VARCHAR},</if>
+            <if test="pic != null">pic = #{pic,jdbcType=VARCHAR},</if>
+            <if test="likes != null">likes = #{likes,jdbcType=INTEGER},</if>
+            <if test="views != null">views = #{views,jdbcType=INTEGER},</if>
+            <if test="comments != null">comments = #{comments,jdbcType=INTEGER},</if>
+            <if test="reports != null">reports = #{reports,jdbcType=INTEGER},</if>
+            <if test="sort != null">sort = #{sort,jdbcType=INTEGER},</if>
+            <if test="recommandStatus != null">recommand_status = #{recommandStatus,jdbcType=INTEGER},</if>
+            <if test="verifyStatus != null">verify_status = #{verifyStatus,jdbcType=INTEGER},</if>
+            <if test="remark != null">remark = #{remark,jdbcType=VARCHAR},</if>
+            <if test="gmtCreate != null">gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},</if>
+            <if test="creator != null">creator = #{creator,jdbcType=VARCHAR},</if>
+            <if test="gmtModified != null">gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},</if>
+            <if test="modifier != null">modifier = #{modifier,jdbcType=VARCHAR},</if>
+            <if test="isDelete != null">is_delete = #{isDelete,jdbcType=TINYINT},</if>
+        </set>
+        WHERE id = #{id,jdbcType=BIGINT} 
+    </update>
+    
+    <select id="countSmsReview" parameterType="com.example.demo.entity.SmsReview" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM sms_review
+        <where>
+            <include refid="queryCondition"></include>
+        </where>
+    </select>
+</mapper>

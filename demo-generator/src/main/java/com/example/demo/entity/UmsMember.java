@@ -19,6 +19,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
 
 /**
 * 用户表实体类 : ums_member
@@ -109,4 +110,8 @@ public class UmsMember extends BaseEntity {
     @NotNull(message="[历史积分值]不能为空")
     @ApiModelProperty(value = "历史积分值")
     private Integer historyIntegration;
+
+    @TableField(exist = false)
+    @ApiModelProperty(value = "头像信息")
+    private List<SysFile> avatarInfo;
 }

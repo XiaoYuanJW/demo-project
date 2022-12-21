@@ -1,5 +1,6 @@
 package com.example.demo.service.impl;
 
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.PhoneUtil;
@@ -95,5 +96,14 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     @Override
     public MemberDto info() {
         return MemberHolder.get();
+    }
+
+    @Override
+    public UmsMember detail(Long id) {
+        UmsMember umsMember = umsMemberMapper.getUmsMemberById(id);
+        Assert.notNull(umsMember, "用户信息异常");
+        List<SysFile> fileList = sysFileService.getFileList(umsMember.getAvatar());
+        umsMember.setAvatarInfo(fileList);
+        return umsMember;
     }
 }

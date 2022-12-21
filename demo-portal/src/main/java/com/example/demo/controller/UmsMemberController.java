@@ -42,4 +42,11 @@ public class UmsMemberController {
     public CommonResult info() {
         return CommonResult.success(umsMemberService.info());
     }
+
+
+    @ApiOperation(value = "获取会员信息详情")
+    @GetMapping(value = "/detail/{id}", produces = "application/json;charset=UTF-8")
+    public CommonResult detail(Long id) {
+        return CommonResult.success(umsMemberService .detail(id));
+    }
 }
