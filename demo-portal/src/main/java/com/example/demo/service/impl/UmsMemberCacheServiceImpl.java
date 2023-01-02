@@ -1,6 +1,7 @@
 package com.example.demo.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.map.MapUtil;
 import com.example.demo.annotation.CacheException;
 import com.example.demo.dto.MemberDto;
 import com.example.demo.entity.UmsMember;
@@ -69,8 +70,10 @@ public class UmsMemberCacheServiceImpl implements UmsMemberCacheService {
     @Override
     public MemberDto getMember(String token) {
         Map<Object, Object> value = redisService.hGetAll(REDIS_KEY_MEMBER + ":" + token);
-        MemberDto memberDto = BeanUtil.mapToBean(value, MemberDto.class, false);
-//        = BeanUtil.fillBeanWithMap(value, new MemberDto(), false);
+        MemberDto memberDto = null;
+        if (MapUtil.isNotEmpty(value)) {
+             memberDto = BeanUtil.mapToBean(value, MemberDto.class, false);
+        }
         return memberDto;
     }
 

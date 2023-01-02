@@ -6,6 +6,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.PhoneUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.demo.constants.SysFileConstant;
 import com.example.demo.constants.UmsMemberConstant;
 import com.example.demo.dto.LoginParam;
@@ -33,7 +34,7 @@ import java.util.Map;
  */
 @Slf4j
 @Service
-public class UmsMemberServiceImpl implements UmsMemberService {
+public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember> implements UmsMemberService {
     @Resource
     private UmsMemberMapper umsMemberMapper;
     @Resource

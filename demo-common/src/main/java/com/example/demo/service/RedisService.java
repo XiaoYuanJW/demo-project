@@ -211,6 +211,40 @@ public interface RedisService {
     Long sRemove(String key, Object... values);
 
     /**
+     * 向ZSet结构中添加属性
+     * @param key
+     * @param value
+     * @param score
+     * @return
+     */
+    Boolean zAdd(String key, Object value, double score);
+
+    /**
+     * 获取zSet结构元素的权重
+     * @param key
+     * @param value
+     * @return
+     */
+    public Double zScore(String key, Object value);
+
+    /**
+     * 获取zSet结构中范围的元素
+     * @param key
+     * @param start
+     * @param end
+     * @return
+     */
+    public Set zRange(String key, long start, long end);
+
+    /**
+     * 删除ZSet结构中的属性
+     * @param key
+     * @param values
+     * @return
+     */
+    Long zRemove(String key, Object... values);
+
+    /**
      * 向List结构中添加属性
      * @param key
      * @param value
@@ -278,7 +312,7 @@ public interface RedisService {
     Long lRemove(String key, long count, Object value);
 
     /**
-     * 通过SETNX实现锁
+     * Setnx实现锁
      * @param key
      * @param value
      * @param timeout

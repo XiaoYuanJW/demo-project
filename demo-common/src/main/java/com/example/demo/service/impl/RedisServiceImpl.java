@@ -154,6 +154,26 @@ public class RedisServiceImpl implements RedisService {
     }
 
     @Override
+    public Boolean zAdd(String key, Object value, double score) {
+        return redisTemplate.opsForZSet().add(key, value, score);
+    }
+
+    @Override
+    public Double zScore(String key, Object value) {
+        return redisTemplate.opsForZSet().score(key, value);
+    }
+
+    @Override
+    public Set zRange(String key, long start, long end) {
+        return redisTemplate.opsForZSet().range(key, start, end);
+    }
+
+    @Override
+    public Long zRemove(String key, Object... values) {
+        return redisTemplate.opsForZSet().remove(key, values);
+    }
+
+    @Override
     public Long lPush(String key, Object value) {
         return redisTemplate.opsForList().rightPush(key, value);
     }

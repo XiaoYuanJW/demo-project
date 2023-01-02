@@ -1,14 +1,18 @@
 package com.example.demo.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.demo.dto.MemberDto;
 import com.example.demo.dto.SmsReviewDetail;
 import com.example.demo.entity.SmsReview;
 import com.example.demo.entity.SmsStore;
 import com.example.demo.entity.UmsMember;
 import com.example.demo.mapper.SmsReviewMapper;
 import com.example.demo.service.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,11 +20,14 @@ import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 商铺点评接口实现类
  * Created by YuanJW on 2022/12/19.
  */
+@Slf4j
 @Service
 public class SmsReviewServiceImpl extends ServiceImpl<SmsReviewMapper, SmsReview> implements SmsReviewService {
     @Resource
@@ -58,7 +65,7 @@ public class SmsReviewServiceImpl extends ServiceImpl<SmsReviewMapper, SmsReview
             UmsMember umsMember = umsMemberService.detail(smsReviewDetail.getMemberId());
             smsReviewDetail.setUmsMember(umsMember);
             // 获取当前用户的点评点赞状态
-            smsReviewDetail.setIsLike(BooleanUtil.isTrue(isLike(smsReviewDetail.getId())));
+            smsReviewDetail.setIsLike(isLike(smsReviewDetail.getId()));
         });
         return smsReviewDetailList;
     }
@@ -77,6 +84,17 @@ public class SmsReviewServiceImpl extends ServiceImpl<SmsReviewMapper, SmsReview
         smsReviewDetail.setUmsMember(umsMember);
         // 获取当前用户的点评点赞状态
         smsReviewDetail.setIsLike(isLike(id));
+        // 获取当前点评前5的点赞信息
+        Set<Long> likes = redisService.zRange(reviewLike + ":" + smsReview.getId(), 0, 4);
+        if (CollUtil.isNotEmpty(likes)) {
+            List<Long> likeMemberIds = likes.stream().collect(Collectors.toList());
+            String join = StrUtil.join(",", likeMemberIds);
+            List<UmsMember> likeMembers = umsMemberService.query()
+                    .in("id", likeMemberIds)
+                    .last("ORDER BY FIELD(id," + join + ")")
+                    .list();
+            smsReviewDetail.setLikeMembers(likeMembers);
+        }
         return smsReviewDetail;
     }
 
@@ -92,15 +110,15 @@ public class SmsReviewServiceImpl extends ServiceImpl<SmsReviewMapper, SmsReview
             flag = this.update().setSql("likes = likes - 1").eq("id", id).update();
             // 数据库更新成功后操作redis
             if (flag) {
-                redisService.sRemove(reviewLike + ":" + id, memberId);
+                redisService.zRemove(reviewLike + ":" + id, memberId, System.currentTimeMillis());
             }
             return flag;
         }
         // 点评的点赞数量 + 1
         flag = this.update().setSql("likes = likes + 1").eq("id", id).update();
         if (flag) {
-            // 将用户的点赞信息持久化到redis中的set结构中
-            redisService.sAdd(reviewLike + ":" + id, memberId);
+            // 将用户的点赞信息持久化到redis中的ZSet结构中
+            redisService.zAdd(reviewLike + ":" + id, memberId, System.currentTimeMillis());
         }
         return flag;
     }
@@ -111,9 +129,13 @@ public class SmsReviewServiceImpl extends ServiceImpl<SmsReviewMapper, SmsReview
      * @return
      */
     private Boolean isLike(Long id) {
-        // 从ThreadLocal中获取当前用户id
-        Long memberId = umsMemberService.info().getId();
-        // 判断该用户的点赞信息是否存在于Redis的set结构中
-        return redisService.sIsMember(reviewLike + ":" + id, memberId);
+        MemberDto memberDto = umsMemberService.info();
+        if (memberDto != null) {
+            // 从ThreadLocal中获取当前用户id
+            Long memberId = umsMemberService.info().getId();
+            // 判断该用户的点赞信息是否存在于Redis的ZSet结构中
+            return redisService.zScore(reviewLike + ":" + id, memberId) != null;
+        }
+        return false;
     }
 }
