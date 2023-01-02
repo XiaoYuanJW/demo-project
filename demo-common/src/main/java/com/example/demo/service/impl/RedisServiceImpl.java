@@ -154,6 +154,11 @@ public class RedisServiceImpl implements RedisService {
     }
 
     @Override
+    public Set<Object> sInter(List<String> keys) {
+        return redisTemplate.opsForSet().intersect(keys);
+    }
+
+    @Override
     public Boolean zAdd(String key, Object value, double score) {
         return redisTemplate.opsForZSet().add(key, value, score);
     }

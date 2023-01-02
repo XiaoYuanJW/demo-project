@@ -1,6 +1,8 @@
 package com.example.demo.interceptor;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.example.demo.api.ResultCode;
+import com.example.demo.dto.MemberDto;
 import com.example.demo.util.MemberHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -29,7 +31,8 @@ public class LoginInterceptor implements HandlerInterceptor {
 //        MemberHolder.set(member);
 //        return true;
         // 通过ThreadLocal判断是否需要拦截
-        if (MemberHolder.get() == null) {
+        MemberDto memberDto = MemberHolder.get();
+        if (ObjectUtil.isNull(memberDto)) {
             response.setStatus((int) ResultCode.UNAUTHORIZED.getCode());
             return false;
         }

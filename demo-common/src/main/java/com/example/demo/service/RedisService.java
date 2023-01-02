@@ -211,6 +211,13 @@ public interface RedisService {
     Long sRemove(String key, Object... values);
 
     /**
+     * 寻找公共交集
+     * @param keys
+     * @return
+     */
+    Set<Object> sInter(List<String> keys);
+
+    /**
      * 向ZSet结构中添加属性
      * @param key
      * @param value
