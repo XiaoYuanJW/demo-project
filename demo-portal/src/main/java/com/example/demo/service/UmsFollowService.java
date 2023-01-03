@@ -11,24 +11,24 @@ import java.util.List;
 public interface UmsFollowService {
     /**
      * 会员关注
-     * @param follower
+     * @param followee
      * @return
      */
-    int follow(Long follower);
+    int follow(Long followee);
 
     /**
      * 会员取关
-     * @param follower
+     * @param followee
      * @return
      */
-    int unfollow(Long follower);
+    int unfollow(Long followee);
 
     /**
      * 查询会员是否关注
-     * @param follower
+     * @param followee
      * @return
      */
-    boolean isFollow(Long follower);
+    boolean isFollow(Long followee);
 
     List<MemberDto> common(Long id);
 }

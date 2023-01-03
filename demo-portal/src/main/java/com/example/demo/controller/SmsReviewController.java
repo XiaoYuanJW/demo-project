@@ -62,4 +62,11 @@ public class SmsReviewController {
         }
         return CommonResult.failed();
     }
+
+    @ApiOperation(value = "关注人博客推送")
+    @GetMapping(value = "/follow")
+    public CommonResult follow(@RequestParam(value = "max", required = false) Long max,
+                               @RequestParam(value = "offset", defaultValue = "0") Integer offSet)  throws InterruptedException {
+        return CommonResult.success(smsReviewService.follow(max, offSet));
+    }
 }

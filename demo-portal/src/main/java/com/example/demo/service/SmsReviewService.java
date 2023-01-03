@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.demo.dto.ScrollResult;
 import com.example.demo.dto.SmsReviewDetail;
 import com.example.demo.entity.SmsReview;
 
@@ -38,4 +39,12 @@ public interface SmsReviewService extends IService<SmsReview> {
      * @return
      */
     boolean like(Long id);
+
+    /**
+     * 关注人博客推送
+     * @param max
+     * @param offSet
+     * @return
+     */
+    ScrollResult follow(Long max, Integer offSet) throws InterruptedException;
 }

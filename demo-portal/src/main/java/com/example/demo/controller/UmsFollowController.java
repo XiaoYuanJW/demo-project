@@ -20,9 +20,9 @@ public class UmsFollowController {
     private UmsFollowService umsFollowService;
 
     @ApiOperation(value = "会员关注")
-    @PostMapping("/follow/{follower}")
-    public CommonResult follow(@PathVariable Long follower) {
-        int follow = umsFollowService.follow(follower);
+    @PostMapping("/follow/{followee}")
+    public CommonResult follow(@PathVariable Long followee) {
+        int follow = umsFollowService.follow(followee);
         if (follow > 0) {
             return CommonResult.success("关注成功");
         }
@@ -30,9 +30,9 @@ public class UmsFollowController {
     }
 
     @ApiOperation(value = "会员取关")
-    @PostMapping("/unfollow/{follower}")
-    public CommonResult unfollow(@PathVariable Long follower) {
-        int unfollow = umsFollowService.unfollow(follower);
+    @PostMapping("/unfollow/{followee}")
+    public CommonResult unfollow(@PathVariable Long followee) {
+        int unfollow = umsFollowService.unfollow(followee);
         if (unfollow > 0) {
             return CommonResult.success("取关成功");
         }
@@ -40,9 +40,9 @@ public class UmsFollowController {
     }
 
     @ApiOperation(value = "查询会员是否关注")
-    @GetMapping("/isFollow/{follower}")
-    public CommonResult isFollow(@PathVariable Long follower) {
-        return CommonResult.success(umsFollowService.isFollow(follower));
+    @GetMapping("/isFollow/{followee}")
+    public CommonResult isFollow(@PathVariable Long followee) {
+        return CommonResult.success(umsFollowService.isFollow(followee));
     }
 
     @ApiOperation(value = "查询与指定用户的共同关注")

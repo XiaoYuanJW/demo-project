@@ -64,7 +64,7 @@
         <jjwt.version>0.9.1</jjwt.version>
         <json.version>1.2.83</json.version>
         <redis.version>2.7.5</redis.version>
-        <redission.version>3.17.6</redission.version>
+        <redission.version>3.15.6</redission.version>
         <logstash-logback.version>7.2</logstash-logback.version>
         <minio.version>8.4.5</minio.version>
         <amqp.version>2.3.9.RELEASE</amqp.version>

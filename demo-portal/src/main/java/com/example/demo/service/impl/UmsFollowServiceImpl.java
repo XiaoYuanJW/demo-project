@@ -43,56 +43,56 @@ public class UmsFollowServiceImpl implements UmsFollowService {
     private String follewKey;
 
     @Override
-    public int follow(Long follower) {
+    public int follow(Long followee) {
         // 校验关注用户是否存在
-        UmsMember umsMember = umsMemberMapper.selectById(follower);
+        UmsMember umsMember = umsMemberMapper.selectById(followee);
         if (umsMember == null) {
             throw new ServiceException("被关注会员信息不存在");
         }
-        Long followee = MemberHolder.get().getId();
+        Long follower = MemberHolder.get().getId();
         // 避免自己关注自己
         if (followee.equals(follower)) {
             throw new ServiceException("不能自己关注自己");
         }
         // 校验用户是否已经关注指定用户
         UmsFollow umsFollow = umsFollowMapper.selectOne(new LambdaQueryWrapper<UmsFollow>()
-                .eq(UmsFollow::getFollowerId, follower)
-                .eq(UmsFollow::getFolloweeId, followee));
+                        .eq(UmsFollow::getFolloweeId, followee)
+                        .eq(UmsFollow::getFollowerId, follower));
         if (umsFollow != null) {
             throw new ServiceException("您已经关注该用户");
         }
         int count = umsFollowMapper.insert(new UmsFollow()
-                .setFolloweeId(followee)
-                .setFollowerId(follower));
+                        .setFollowerId(follower)
+                        .setFolloweeId(followee));
         if (count > 0) {
             // 将关注信息添加到redis的set集合中
-            redisService.sAdd(follewKey + ":" + followee, follower);
+            redisService.sAdd(follewKey + ":" + follower, followee);
         }
         return count;
     }
 
     @Override
-    public int unfollow(Long follower) {
-        Long followee = MemberHolder.get().getId();
+    public int unfollow(Long followee) {
+        Long follower = MemberHolder.get().getId();
         UmsFollow umsFollow = umsFollowMapper.selectOne(new LambdaQueryWrapper<UmsFollow>()
-                .eq(UmsFollow::getFollowerId, follower)
-                .eq(UmsFollow::getFolloweeId, followee));
+                        .eq(UmsFollow::getFolloweeId, followee)
+                        .eq(UmsFollow::getFollowerId, follower));
         if (umsFollow == null) {
             throw new ServiceException("您未关注该用户");
         }
         int count = umsFollowMapper.deleteById(umsFollow.getId());
         if (count > 0) {
             // 将关注信息从redis的set集合中移除
-            redisService.sRemove(follewKey + ":" + followee, follower);
+            redisService.sRemove(follewKey + ":" + follower, followee);
         }
         return count;
     }
 
     @Override
-    public boolean isFollow(Long follower) {
-        Long followee = MemberHolder.get().getId();
+    public boolean isFollow(Long followee) {
+        Long follower = MemberHolder.get().getId();
         // 校验用户是否已经关注指定用户
-        return BooleanUtil.isTrue(redisService.sIsMember(follewKey + ":" + followee, follower));
+        return BooleanUtil.isTrue(redisService.sIsMember(follewKey + ":" + follower, followee));
     }
 
     @Override
