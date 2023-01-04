@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.example.demo.validator.groups.insert;
@@ -103,11 +104,15 @@ public class SmsStore extends BaseEntity{
     @ApiModelProperty(value = "商品审核状态：0->未审核；1->审核通过")
     private Integer verifyStatus;
     
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "HH:mm:ss")
     @ApiModelProperty(value = "每日营业开始时间")
     private Date businessStartTime;
     
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "HH:mm:ss")
     @ApiModelProperty(value = "每日营业结束时间")
     private Date businessEndTime;
+
+    @TableField(exist = false)
+    @ApiModelProperty(value = "距离")
+    private Double distance;
 }

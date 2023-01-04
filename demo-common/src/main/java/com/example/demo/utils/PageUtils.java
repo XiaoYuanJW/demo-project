@@ -44,7 +44,7 @@ public class PageUtils {
      * 封装分页对象
      * @return
      */
-    private static Page getPage() {
+    public static Page getPage() {
         Page page = new Page();
         page.setPageNum(Convert.toInt(ServletUtils.getParameter(PAGE_NUM), 1));
         page.setPageSize(Convert.toInt(ServletUtils.getParameter(PAGE_SIZE), 10));
