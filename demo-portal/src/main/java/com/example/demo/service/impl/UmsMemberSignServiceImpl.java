@@ -1,6 +1,7 @@
 package com.example.demo.service.impl;
 
 import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.example.demo.dto.QueueEnum;
 import com.example.demo.entity.UmsMemberSign;
 import com.example.demo.entity.UmsMemberSignLog;
@@ -50,6 +51,11 @@ public class UmsMemberSignServiceImpl implements UmsMemberSignService {
 
     @Override
     public boolean sign(Long signId) {
+        // 校验签到活动是否存在
+        UmsMemberSign umsMemberSign = umsMemberSignMapper.selectById(signId);
+        if (ObjectUtil.isNull(umsMemberSign)){
+            throw new ServiceException("该签到活动不存在");
+        }
         Long memberId = MemberHolder.get().getId();
         LocalDateTime now = LocalDateTime.now();
         String time = now.format(DateTimeFormatter.ofPattern("yyyy/MM"));
@@ -69,13 +75,16 @@ public class UmsMemberSignServiceImpl implements UmsMemberSignService {
                 .memberId(memberId)
                 .signId(signId)
                 .backupStatus(1).signTime(new Date()).build();
-        amqpTemplate.convertAndSend(QueueEnum.QUEUE_SIGN_LOG.getExchange(),
-                QueueEnum.QUEUE_SIGN_LOG.getRouteKey(), umsMemberSignLog);
+        amqpTemplate.convertAndSend(
+                QueueEnum.QUEUE_SIGN_LOG.getExchange(),
+                QueueEnum.QUEUE_SIGN_LOG.getRouteKey(),
+                umsMemberSignLog
+        );
         return true;
     }
 
     @RabbitListener(queues = "demo.sign.log")
-    public void handle(UmsMemberSignLog umsMemberSignLog) {
+    public void handleSignLog(UmsMemberSignLog umsMemberSignLog) {
         umsMemberSignLogMapper.insert(umsMemberSignLog);
     }
 }

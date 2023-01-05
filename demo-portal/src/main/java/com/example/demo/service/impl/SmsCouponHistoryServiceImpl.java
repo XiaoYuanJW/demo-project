@@ -2,6 +2,7 @@ package com.example.demo.service.impl;
 
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.example.demo.dto.QueueEnum;
 import com.example.demo.entity.SmsCoupon;
 import com.example.demo.entity.SmsCouponHistory;
 import com.example.demo.exception.ServiceException;
@@ -13,6 +14,8 @@ import com.example.demo.util.MemberHolder;
 import com.example.demo.utils.IdGeneratorUtils;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -54,6 +57,8 @@ public class SmsCouponHistoryServiceImpl implements SmsCouponHistoryService {
     @Value("${redis.expire.lock}")
     private Long REDIS_EXPIRE_LOCK;
     private static final DefaultRedisScript<Long> SECKILL_LOCK;
+    @Resource
+    private AmqpTemplate amqpTemplate;
     @Resource
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
     static {
@@ -193,7 +198,8 @@ public class SmsCouponHistoryServiceImpl implements SmsCouponHistoryService {
         Long result = redisTemplate.execute(
                 SECKILL_LOCK,
                 Collections.emptyList(),
-                id, memberId);
+                id, memberId
+        );
         // 没有购买资格返回抢购失败
         if (result.intValue() == -1) {
             throw new ServiceException("优惠券库存不足");
@@ -210,8 +216,39 @@ public class SmsCouponHistoryServiceImpl implements SmsCouponHistoryService {
                 .getType(2)
                 .payType(0)
                 .build();
-        COUPON_HISTORY_QUEUE.add(smsCouponHistory);
+        // 使用RabbitMQ异步处理订单
+        amqpTemplate.convertAndSend(
+                QueueEnum.QUEUE_COUPON_PURCHASE.getExchange(),
+                QueueEnum.QUEUE_COUPON_PURCHASE.getRouteKey(),
+                smsCouponHistory
+        );
+        // 使用阻塞队列异步处理订单
+//        COUPON_HISTORY_QUEUE.add(smsCouponHistory);
         // 返回订单id
         return historyId;
+    }
+
+    @RabbitListener(queues = "demo.coupon.purchase")
+    public void handleConponHistory(SmsCouponHistory smsCouponHistory) {
+        // 从阻塞队列中获取订单信息
+        RLock lock = redisLockService.getRLock(REDIS_LOCK_COUPON_HISTORY);
+        boolean isLock = lock.tryLock();
+        if (!isLock) {
+            throw new ServiceException("一人只允许购买一张优惠券");
+        }
+        try {
+            // 调用事务管理
+            threadPoolTaskExecutor.submit(() -> {
+                transactionTemplate.execute(status -> {
+                    // 增加领取数量削减库存
+                    int count = smsCouponMapper.reduce(smsCouponHistory.getCouponId());
+                    // 新增优惠券订单记录
+                    smsCouponHistoryMapper.insert(smsCouponHistory);
+                    return smsCouponHistory.getId().longValue();
+                });
+            });
+        } finally {
+            lock.unlock();
+        }
     }
 }
