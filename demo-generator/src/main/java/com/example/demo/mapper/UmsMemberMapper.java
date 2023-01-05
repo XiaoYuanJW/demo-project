@@ -14,10 +14,10 @@ import java.util.List;
 public interface UmsMemberMapper extends BaseMapper<UmsMember> {
     /**
     * 新增UmsMember对象
-    * @param record
+    * @param umsMember
     * @return id
     */
-    Long saveUmsMember(UmsMember record);
+    Long saveUmsMember(UmsMember umsMember);
     /**
     * 根据id查询UmsMember对象
     * @param id
@@ -26,16 +26,16 @@ public interface UmsMemberMapper extends BaseMapper<UmsMember> {
     UmsMember getUmsMemberById(Long id);
     /**
     * 根据搜索条件获取UmsMember列表
-    * @param record
+    * @param umsMember
     * @return
     */
-    List<UmsMember> getUmsMembers(UmsMember record);
+    List<UmsMember> getUmsMembers(UmsMember umsMember);
     /**
     * 修改UmsMember对象
-    * @param record
+    * @param umsMember
     * @return
     */
-    int updateUmsMember(UmsMember record);
+    int updateUmsMember(UmsMember umsMember);
     /**
     * 批量删除UmsMember
     * @param ids
@@ -44,8 +44,8 @@ public interface UmsMemberMapper extends BaseMapper<UmsMember> {
     int deleteUmsMembers(List<Long> ids);
     /**
     * 统计UmsMember
-    * @param record
+    * @param umsMember
     * @return
     */
-    int countUmsMember(UmsMember record);
+    int countUmsMember(UmsMember umsMember);
 }

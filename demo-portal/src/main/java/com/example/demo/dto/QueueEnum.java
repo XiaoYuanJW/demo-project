@@ -10,7 +10,16 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum QueueEnum {
-    QUEUE_COUPON_PURCHASE("demo.coupon.direct", "demo.coupon.purchase", "demo.coupon.purchase");
+    /**
+     * 优惠券抢购队列
+     */
+    QUEUE_COUPON_PURCHASE("demo.coupon.direct", "demo.coupon.purchase", "demo.coupon.purchase"),
+
+    /**
+     * 签到日志队列
+     */
+    QUEUE_SIGN_LOG("demo.sign.direct", "demo.sign.log", "demo.sign.log");
+
 
     /**
      * 交换机名称

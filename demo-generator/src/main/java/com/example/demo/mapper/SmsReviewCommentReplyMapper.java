@@ -14,10 +14,10 @@ import java.util.List;
 public interface SmsReviewCommentReplyMapper extends BaseMapper<SmsReviewCommentReply> {
     /**
     * 新增SmsReviewCommentReply对象
-    * @param record
+    * @param smsReviewCommentReply
     * @return id
     */
-    Long saveSmsReviewCommentReply(SmsReviewCommentReply record);
+    Long saveSmsReviewCommentReply(SmsReviewCommentReply smsReviewCommentReply);
     /**
     * 根据id查询SmsReviewCommentReply对象
     * @param id
@@ -26,16 +26,16 @@ public interface SmsReviewCommentReplyMapper extends BaseMapper<SmsReviewComment
     SmsReviewCommentReply getSmsReviewCommentReplyById(Long id);
     /**
     * 根据搜索条件获取SmsReviewCommentReply列表
-    * @param record
+    * @param smsReviewCommentReply
     * @return
     */
-    List<SmsReviewCommentReply> getSmsReviewCommentReplys(SmsReviewCommentReply record);
+    List<SmsReviewCommentReply> getSmsReviewCommentReplys(SmsReviewCommentReply smsReviewCommentReply);
     /**
     * 修改SmsReviewCommentReply对象
-    * @param record
+    * @param smsReviewCommentReply
     * @return
     */
-    int updateSmsReviewCommentReply(SmsReviewCommentReply record);
+    int updateSmsReviewCommentReply(SmsReviewCommentReply smsReviewCommentReply);
     /**
     * 批量删除SmsReviewCommentReply
     * @param ids
@@ -44,8 +44,8 @@ public interface SmsReviewCommentReplyMapper extends BaseMapper<SmsReviewComment
     int deleteSmsReviewCommentReplys(List<Long> ids);
     /**
     * 统计SmsReviewCommentReply
-    * @param record
+    * @param smsReviewCommentReply
     * @return
     */
-    int countSmsReviewCommentReply(SmsReviewCommentReply record);
+    int countSmsReviewCommentReply(SmsReviewCommentReply smsReviewCommentReply);
 }

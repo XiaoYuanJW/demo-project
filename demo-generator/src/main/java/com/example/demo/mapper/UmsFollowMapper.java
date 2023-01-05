@@ -14,10 +14,10 @@ import java.util.List;
 public interface UmsFollowMapper extends BaseMapper<UmsFollow> {
     /**
     * 新增UmsFollow对象
-    * @param record
+    * @param umsFollow
     * @return id
     */
-    Long saveUmsFollow(UmsFollow record);
+    Long saveUmsFollow(UmsFollow umsFollow);
     /**
     * 根据id查询UmsFollow对象
     * @param id
@@ -26,16 +26,16 @@ public interface UmsFollowMapper extends BaseMapper<UmsFollow> {
     UmsFollow getUmsFollowById(Long id);
     /**
     * 根据搜索条件获取UmsFollow列表
-    * @param record
+    * @param umsFollow
     * @return
     */
-    List<UmsFollow> getUmsFollows(UmsFollow record);
+    List<UmsFollow> getUmsFollows(UmsFollow umsFollow);
     /**
     * 修改UmsFollow对象
-    * @param record
+    * @param umsFollow
     * @return
     */
-    int updateUmsFollow(UmsFollow record);
+    int updateUmsFollow(UmsFollow umsFollow);
     /**
     * 批量删除UmsFollow
     * @param ids
@@ -44,8 +44,8 @@ public interface UmsFollowMapper extends BaseMapper<UmsFollow> {
     int deleteUmsFollows(List<Long> ids);
     /**
     * 统计UmsFollow
-    * @param record
+    * @param umsFollow
     * @return
     */
-    int countUmsFollow(UmsFollow record);
+    int countUmsFollow(UmsFollow umsFollow);
 }

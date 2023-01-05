@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.UmsMemberSignLogMapper">
+    <resultMap id="BaseResultMap" type="com.example.demo.entity.UmsMemberSignLog">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="memberId" column="member_id" jdbcType="BIGINT"/>
+        <result property="signId" column="sign_id" jdbcType="BIGINT"/>
+        <result property="backupStatus" column="backup_status" jdbcType="TINYINT"/>
+        <result property="signTime" column="sign_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
+        <result property="creator" column="creator" jdbcType="VARCHAR"/>
+        <result property="gmtModified" column="gmt_modified" jdbcType="TIMESTAMP"/>
+        <result property="modifier" column="modifier" jdbcType="VARCHAR"/>
+        <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, member_id, sign_id, backup_status, sign_time, remark, gmt_create, creator, gmt_modified, modifier, is_delete
+    </sql>
+
+    <sql id="queryCondition">
+        <if test="id != null">and id = #{id,jdbcType=BIGINT}</if>
+        <if test="memberId != null">and member_id = #{memberId,jdbcType=BIGINT}</if>
+        <if test="signId != null">and sign_id = #{signId,jdbcType=BIGINT}</if>
+        <if test="backupStatus != null">and backup_status = #{backupStatus,jdbcType=TINYINT}</if>
+        <if test="signTime != null">and sign_time = #{signTime,jdbcType=TIMESTAMP}</if>
+        <if test="remark != null">and remark = #{remark,jdbcType=VARCHAR}</if>
+        <if test="gmtCreate != null">and gmt_create = #{gmtCreate,jdbcType=TIMESTAMP}</if>
+        <if test="creator != null">and creator = #{creator,jdbcType=VARCHAR}</if>
+        <if test="gmtModified != null">and gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}</if>
+        <if test="modifier != null">and modifier = #{modifier,jdbcType=VARCHAR}</if>
+        <if test="isDelete != null">and is_delete = #{isDelete,jdbcType=TINYINT}</if>
+    </sql>
+
+    <insert id="saveUmsMemberSignLog" keyColumn="id" keyProperty="id" parameterType="com.example.demo.entity.UmsMemberSignLog" useGeneratedKeys="true">
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO ums_member_sign_log (id, member_id, sign_id, backup_status, sign_time, remark, gmt_create, creator, gmt_modified, modifier, is_delete)
+        VALUES (
+            #{id,jdbcType=BIGINT},
+            #{memberId,jdbcType=BIGINT},
+            #{signId,jdbcType=BIGINT},
+            #{backupStatus,jdbcType=TINYINT},
+            #{signTime,jdbcType=TIMESTAMP},
+            #{remark,jdbcType=VARCHAR},
+            #{gmtCreate,jdbcType=TIMESTAMP},
+            #{creator,jdbcType=VARCHAR},
+            #{gmtModified,jdbcType=TIMESTAMP},
+            #{modifier,jdbcType=VARCHAR},
+            #{isDelete,jdbcType=TINYINT}
+        )
+    </insert>
+
+    <select id="getUmsMemberSignLogById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM ums_member_sign_log
+        WHERE id = #{id,jdbcType=BIGINT} 
+    </select>
+
+    <select id="getUmsMemberSignLogs" parameterType="com.example.demo.entity.UmsMemberSignLog" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM ums_member_sign_log
+        <where>
+            <include refid="queryCondition"></include>
+        </where>
+    </select>
+    
+    <delete id="deleteUmsMemberSignLogs" parameterType="java.util.List">
+        DELETE FROM ums_member_sign_log
+        <where>
+         id IN
+            <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </where>
+    </delete>
+
+    <update id="updateUmsMemberSignLog" parameterType="com.example.demo.entity.UmsMemberSignLog">
+        UPDATE ums_member_sign_log
+        <set>
+            <if test="memberId != null">member_id = #{memberId,jdbcType=BIGINT},</if>
+            <if test="signId != null">sign_id = #{signId,jdbcType=BIGINT},</if>
+            <if test="backupStatus != null">backup_status = #{backupStatus,jdbcType=TINYINT},</if>
+            <if test="signTime != null">sign_time = #{signTime,jdbcType=TIMESTAMP},</if>
+            <if test="remark != null">remark = #{remark,jdbcType=VARCHAR},</if>
+            <if test="gmtCreate != null">gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},</if>
+            <if test="creator != null">creator = #{creator,jdbcType=VARCHAR},</if>
+            <if test="gmtModified != null">gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},</if>
+            <if test="modifier != null">modifier = #{modifier,jdbcType=VARCHAR},</if>
+            <if test="isDelete != null">is_delete = #{isDelete,jdbcType=TINYINT},</if>
+        </set>
+        WHERE id = #{id,jdbcType=BIGINT} 
+    </update>
+    
+    <select id="countUmsMemberSignLog" parameterType="com.example.demo.entity.UmsMemberSignLog" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM ums_member_sign_log
+        <where>
+            <include refid="queryCondition"></include>
+        </where>
+    </select>
+</mapper>

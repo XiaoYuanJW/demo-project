@@ -14,10 +14,10 @@ import java.util.List;
 public interface SmsReviewMapper extends BaseMapper<SmsReview> {
     /**
     * 新增SmsReview对象
-    * @param record
+    * @param smsReview
     * @return id
     */
-    Long saveSmsReview(SmsReview record);
+    Long saveSmsReview(SmsReview smsReview);
     /**
     * 根据id查询SmsReview对象
     * @param id
@@ -26,16 +26,16 @@ public interface SmsReviewMapper extends BaseMapper<SmsReview> {
     SmsReview getSmsReviewById(Long id);
     /**
     * 根据搜索条件获取SmsReview列表
-    * @param record
+    * @param smsReview
     * @return
     */
-    List<SmsReview> getSmsReviews(SmsReview record);
+    List<SmsReview> getSmsReviews(SmsReview smsReview);
     /**
     * 修改SmsReview对象
-    * @param record
+    * @param smsReview
     * @return
     */
-    int updateSmsReview(SmsReview record);
+    int updateSmsReview(SmsReview smsReview);
     /**
     * 批量删除SmsReview
     * @param ids
@@ -44,8 +44,8 @@ public interface SmsReviewMapper extends BaseMapper<SmsReview> {
     int deleteSmsReviews(List<Long> ids);
     /**
     * 统计SmsReview
-    * @param record
+    * @param smsReview
     * @return
     */
-    int countSmsReview(SmsReview record);
+    int countSmsReview(SmsReview smsReview);
 }

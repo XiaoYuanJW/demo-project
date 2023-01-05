@@ -34,7 +34,7 @@ public class IdGeneratorUtils {
     public long generateId(String key) {
         // 生成时间戳
         long stamp = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) - BEGIN_TIMESTAMP;
-        String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-dd-mm"));
+        String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         // 生成序列号
         long incr = redisService.incr(KEY_PREFIX + ":" + key + ":" + date, 1L);
         // 返回id

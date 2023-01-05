@@ -36,6 +36,10 @@ spring:
     listener:
       simple:
         prefetch: 1 # 允许预取消息次数
+        retry:
+          enable: true # 开启重试消费限制策略
+          max-attempts: 5 # 最大重试次数
+          initial-interval: 3000 # 重试建个时间（3秒）
 
 logging:
   level:
