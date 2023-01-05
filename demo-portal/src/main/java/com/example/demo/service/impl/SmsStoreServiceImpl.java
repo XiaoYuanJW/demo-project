@@ -15,6 +15,7 @@ import com.example.demo.service.RedisService;
 import com.example.demo.service.SmsStoreService;
 import com.example.demo.service.SysFileService;
 import com.example.demo.utils.PageUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.GeoResult;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
  * 商铺操作实现类
  * Created by YuanJW on 2022/12/6.
  */
+@Slf4j
 @Service
 public class SmsStoreServiceImpl extends ServiceImpl<SmsStoreMapper, SmsStore> implements SmsStoreService {
     @Resource
@@ -111,7 +113,7 @@ public class SmsStoreServiceImpl extends ServiceImpl<SmsStoreMapper, SmsStore> i
         if (count > 0) {
             // 删除缓存
             redisService.del(key);
-            // TODO : 修改redis中地理信息
+            // 修改redis中地理信息
             double x = smsStore.getLat() != null ? smsStore.getLat().doubleValue() : oldStore.getLat().doubleValue();
             double y = smsStore.getLng() != null ? smsStore.getLng().doubleValue() : oldStore.getLng().doubleValue();
             redisTemplate.opsForGeo().remove(REDIS_KEY_GEO + ":" + oldStore.getCategoryId(), oldStore.getId());
@@ -127,7 +129,7 @@ public class SmsStoreServiceImpl extends ServiceImpl<SmsStoreMapper, SmsStore> i
     public int insert(SmsStore smsStore) {
         // 更新数据库
         int count = smsStoreMapper.insert(smsStore);
-        // TODO : 新增地理信息至redis
+        // 新增地理信息至redis
         if (count > 0) {
             if (smsStore.getLng() != null && smsStore.getLat() != null) {
                 // 将店铺地理信息写入redis中
@@ -174,6 +176,7 @@ public class SmsStoreServiceImpl extends ServiceImpl<SmsStoreMapper, SmsStore> i
     public List<SmsStore> search(SearchStoreParam searchStoreParam) {
         // 是否根据地理坐标进行查询
         if (searchStoreParam.getLat() == null || searchStoreParam.getLng() == null) {
+            PageUtils.startPage();
             return smsStoreMapper.selectList(new LambdaQueryWrapper<SmsStore>()
                     .eq(SmsStore::getCategoryId, searchStoreParam.getCategoryId()));
         }

@@ -62,7 +62,6 @@ public class SmsStoreController {
     @ApiOperation(value = "查询附近店铺")
     @GetMapping(value = "/search", produces = "application/json;charset=UTF-8")
     public CommonResult search(@Validated SearchStoreParam searchStoreParam) {
-        PageUtils.startPage();
         return CommonResult.success(smsStoreService.search(searchStoreParam));
     }
 
