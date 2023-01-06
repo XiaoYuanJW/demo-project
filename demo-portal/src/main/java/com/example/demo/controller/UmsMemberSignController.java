@@ -44,4 +44,10 @@ public class UmsMemberSignController {
         }
         return CommonResult.failed("签到失败");
     }
+
+    @ApiOperation(value = "查看签到统计")
+    @GetMapping("/statistics/{signId}")
+    public CommonResult statistics(@PathVariable Long signId) {
+        return CommonResult.success(umsMemberSignService.statistics(signId));
+    }
 }

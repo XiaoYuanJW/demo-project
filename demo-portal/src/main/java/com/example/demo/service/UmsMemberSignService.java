@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.SignStatisticsDto;
 import com.example.demo.entity.UmsMemberSign;
 
 import java.util.List;
@@ -28,4 +29,11 @@ public interface UmsMemberSignService {
      * @param signId
      */
     boolean sign(Long signId);
+
+    /**
+     * 查看签到统计
+     * @param signId
+     * @return
+     */
+    SignStatisticsDto statistics(Long signId);
 }
