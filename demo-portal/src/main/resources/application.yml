@@ -56,6 +56,7 @@ redis:
     reviewPush: "sms:review:push" #商铺点评消息推送
     geo: "sms:store:geo" # 商铺地理位置
     sign: "ums:sign:log" # 会员签到记录
+    uv: "ums:unique:visitor" # 独立访客量记录
   lock:
     store: "sms:lock:store" # 商铺信息锁
     storeCategory: "sms:lock:store:category" # 商铺种类锁

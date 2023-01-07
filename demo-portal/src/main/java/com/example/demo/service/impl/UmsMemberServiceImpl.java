@@ -1,5 +1,6 @@
 package com.example.demo.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -20,10 +21,15 @@ import com.example.demo.service.UmsMemberCacheService;
 import com.example.demo.service.UmsMemberService;
 import com.example.demo.util.MemberHolder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +47,10 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
     private UmsMemberCacheService umsMemberCacheService;
     @Resource
     private SysFileService sysFileService;
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
+    @Value("${redis.key.uv}")
+    private String UVKey;
 
     @Override
     public String getAuthCode(String phone, HttpSession httpSession) {
@@ -106,5 +116,12 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
         List<SysFile> fileList = sysFileService.getFileList(umsMember.getAvatar());
         umsMember.setAvatarInfo(fileList);
         return umsMember;
+    }
+
+    @Override
+    public Long uv(Date date) {
+        String format = date != null ? DateUtil.format(date, "yyyy-MM-dd") :
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        return redisTemplate.opsForHyperLogLog().size(UVKey + format);
     }
 }

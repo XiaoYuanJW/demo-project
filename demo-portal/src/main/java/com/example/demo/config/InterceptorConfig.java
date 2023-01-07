@@ -2,8 +2,10 @@ package com.example.demo.config;
 
 import com.example.demo.interceptor.LoginInterceptor;
 import com.example.demo.interceptor.TokenInterceptor;
+import com.example.demo.interceptor.UVInterceptor;
 import com.example.demo.service.UmsMemberCacheService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -35,5 +37,16 @@ public class InterceptorConfig implements WebMvcConfigurer {
                         "/member/getAuthCode",
                         "/member/login"
                 ).order(1);
+        // UV统计拦截器
+        registry.addInterceptor(uvInterceptor())
+                .excludePathPatterns(
+                        "/member/getAuthCode",
+                        "/member/login"
+                ).order(2);
+    }
+
+    @Bean
+    public UVInterceptor uvInterceptor() {
+        return new UVInterceptor();
     }
 }

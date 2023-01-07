@@ -6,6 +6,7 @@ import com.example.demo.dto.MemberDto;
 import com.example.demo.entity.UmsMember;
 
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 
 /**
  * 会员信息操作接口
@@ -40,4 +41,11 @@ public interface UmsMemberService extends IService<UmsMember> {
      * @return
      */
     UmsMember detail(Long id);
+
+    /**
+     * 会员UV统计
+     * @param date
+     * @return
+     */
+    Long uv(Date date);
 }
